@@ -71,6 +71,31 @@ export const api = {
     return res.data;
   },
 
+  async challengeInvestigation(caseId: string, data: { counterEvidence: string; counterUrl?: string; reason?: string }) {
+    const res = await apiClient.post(`/investigations/${caseId}/challenge`, data);
+    return res.data;
+  },
+
+  getExportUrl(caseId: string, format: 'json' | 'markdown' = 'json') {
+    return `${API_BASE_URL}/investigations/${caseId}/export?format=${format}`;
+  },
+
+  async downloadReport(caseId: string, format: 'json' | 'markdown' = 'json') {
+    const url = `${API_BASE_URL}/investigations/${caseId}/export?format=${format}`;
+    const res = await apiClient.get(url, { responseType: 'blob' });
+    const blob = new Blob([res.data], {
+      type: format === 'json' ? 'application/json' : 'text/markdown'
+    });
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = `GhostNet-Case-${caseId}-Report.${format === 'json' ? 'json' : 'md'}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(downloadUrl);
+  },
+
   /**
    * Real-time Server-Sent Events (SSE) connector
    */

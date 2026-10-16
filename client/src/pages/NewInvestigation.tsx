@@ -88,12 +88,17 @@ export const NewInvestigation: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Page Header */}
       <div className="p-6 sm:p-8 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] relative dots">
-        <div className="tag-sticker yellow mb-3">FILING OF INDICTMENT</div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="tag-sticker yellow">SCREEN 1: INTAKE DESK</span>
+          <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full bg-[#56b29e] border border-[#1d1b18] text-[11px] font-brand font-black uppercase text-[#1d1b18]">
+            FILING & ADMISSION
+          </span>
+        </div>
         <h1 className="font-brand font-black text-4xl sm:text-6xl text-[#1d1b18] uppercase leading-none">
-          EMPANEL A NEW TRIAL.
+          SUBMIT CLAIM & START INVESTIGATION.
         </h1>
-        <p className="text-sm font-semibold text-[#6e665b] mt-2 max-w-xl">
-          Submit any generative response, technical code snippet, or disputed factual statement to the autonomous courtroom.
+        <p className="text-sm font-semibold text-[#6e665b] mt-2 max-w-2xl">
+          Submit any generative response, technical code snippet, or disputed factual statement to empanel the autonomous multi-agent courtroom.
         </p>
       </div>
 

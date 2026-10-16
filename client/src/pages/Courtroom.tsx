@@ -3,7 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   Scale, ShieldAlert, Gavel, BookOpen, Clock, Copy, Check,
   RotateCw, Plus, ChevronDown, ChevronUp, AlertCircle, ExternalLink,
-  ShieldCheck, Loader2, Sparkles, FileText, CheckCircle2, XCircle
+  ShieldCheck, Loader2, Sparkles, FileText, CheckCircle2, XCircle,
+  Download, RotateCcw
 } from 'lucide-react';
 import { api } from '../services/api';
 import { CaseData, EvidenceRecord, InvestigationEvent } from '../types';
@@ -34,6 +35,7 @@ export const Courtroom: React.FC = () => {
   const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(null);
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
+  const [isChallenging, setIsChallenging] = useState(false);
 
   // Expanded state for events
   const [expandedEvents, setExpandedEvents] = useState<Record<string, boolean>>({});
@@ -104,6 +106,17 @@ export const Courtroom: React.FC = () => {
       alert(`Retry failed: ${err.message}`);
     } finally {
       setIsRetrying(false);
+    }
+  };
+
+  const handleChallengeAppeal = async (challengeData: { counterEvidence: string; counterUrl?: string; reason?: string }) => {
+    if (!caseId) return;
+    setIsChallenging(true);
+    try {
+      await api.challengeInvestigation(caseId, challengeData);
+      await loadCaseData();
+    } finally {
+      setIsChallenging(false);
     }
   };
 
@@ -202,6 +215,7 @@ export const Courtroom: React.FC = () => {
       <div className="rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] p-6 sm:p-8 space-y-5 relative dots">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b-2 border-[#1d1b18]">
           <div className="flex flex-wrap items-center gap-2">
+            <span className="tag-sticker yellow text-[10px]">SCREEN 2: COURTROOM</span>
             <span className="font-brand font-black text-base text-[#1d1b18] bg-[#f8c33c] px-3 py-1 rounded-full border-2 border-[#1d1b18] uppercase">
               {caseData.caseId}
             </span>
@@ -235,6 +249,16 @@ export const Courtroom: React.FC = () => {
               <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#f1e4cf] text-[#1d1b18] border border-[#1d1b18]">
                 EMPANELLED
               </span>
+            )}
+
+            {caseData.status === 'completed' && (
+              <a
+                href="#verdict-room"
+                className="flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#f8c33c] hover:bg-[#ebd03b] border-2 border-[#1d1b18] text-xs font-brand font-black text-[#1d1b18] transition-all cursor-pointer shadow-[1.5px_1.5px_0px_#1d1b18]"
+              >
+                <Gavel className="w-3.5 h-3.5 text-[#1d1b18]" />
+                <span>VERDICT ROOM</span>
+              </a>
             )}
 
             <button
@@ -302,8 +326,11 @@ export const Courtroom: React.FC = () => {
       {caseData.verdict && caseData.status === 'completed' && (
         <VerdictBanner
           verdict={caseData.verdict}
+          caseData={caseData}
           evidenceRecords={evidence}
           onOpenEvidence={openEvidenceInspector}
+          onChallenge={handleChallengeAppeal}
+          isChallenging={isChallenging}
         />
       )}
 
@@ -510,7 +537,7 @@ export const Courtroom: React.FC = () => {
 
       {/* G. CASE ACTIONS */}
       <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:p-6 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18]">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 flex-wrap">
           {caseData.verdict && (
             <button
               onClick={() => copyToClipboard(caseData.verdict?.summary || '', 'verdict')}
@@ -528,6 +555,25 @@ export const Courtroom: React.FC = () => {
             {copiedText === 'docket' ? <Check className="w-3.5 h-3.5 text-[#56b29e]" /> : <Copy className="w-3.5 h-3.5 text-[#1d1b18]" />}
             <span>{copiedText === 'docket' ? 'COPIED DOCKET' : 'COPY DOCKET'}</span>
           </button>
+
+          {caseData.status === 'completed' && (
+            <>
+              <button
+                onClick={() => api.downloadReport(caseData.caseId, 'markdown')}
+                className="btn sm font-brand font-black flex items-center gap-1.5"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>REPORT (.MD)</span>
+              </button>
+              <button
+                onClick={() => api.downloadReport(caseData.caseId, 'json')}
+                className="btn sm ghost font-brand font-black border-2 border-[#1d1b18] flex items-center gap-1.5"
+              >
+                <FileText className="w-3.5 h-3.5 text-[#1d1b18]" />
+                <span>DATA (.JSON)</span>
+              </button>
+            </>
+          )}
         </div>
 
         <div className="flex items-center gap-3">

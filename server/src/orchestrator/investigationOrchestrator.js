@@ -350,28 +350,39 @@ class InvestigationOrchestrator {
   }
 
   /**
-   * Retry an eligible failed case
+   * Challenge & Replay: add counter-evidence and rerun investigation
    */
-  async retryInvestigation(caseId) {
+  async challengeInvestigation(caseId, { counterEvidence, counterUrl, reason }) {
     const caseDoc = await CaseRepository.findOneByCaseId(caseId);
     if (!caseDoc) throw new Error(`Case ${caseId} not found`);
-    if (caseDoc.status !== 'failed') {
-      throw new Error(`Only failed cases can be retried. Current status is ${caseDoc.status}.`);
-    }
 
-    // Reset status and restart
+    const challengeNote = `[APPELLATE COUNTER-EVIDENCE]: ${counterEvidence}${counterUrl ? ` (Reference Source: ${counterUrl})` : ''}${reason ? ` - ${reason}` : ''}`;
+    const updatedContext = caseDoc.context ? `${caseDoc.context}\n\n${challengeNote}` : challengeNote;
+
     await CaseRepository.updateByCaseId(caseId, {
+      context: updatedContext,
       status: 'queued',
       currentStage: 'created',
+      verdict: null,
       errorDetails: null
     });
 
-    // Run asynchronously
-    this.runInvestigation(caseId).catch(err => {
-      console.error(`[Orchestrator] Retry failed for case ${caseId}:`, err.message);
+    await this.emitEvent(caseId, {
+      stage: 'created',
+      agentName: 'Appellate Clerk',
+      eventType: 'CHALLENGE_REPLAY_INITIATED',
+      content: `Challenge & Replay initiated. Counter-evidence lodged on docket: "${counterEvidence.slice(0, 180)}..."`,
+      data: { counterEvidence, counterUrl, reason }
     });
 
-    return { caseId, status: 'queued', message: 'Investigation retry dispatched successfully.' };
+    // Re-run asynchronously
+    setTimeout(() => {
+      this.runInvestigation(caseId).catch(err => {
+        console.error(`[Orchestrator] Challenge rerun error for ${caseId}:`, err);
+      });
+    }, 50);
+
+    return { caseId, status: 'queued', message: 'Counter-evidence admitted. Replay empanelled.' };
   }
 }
 

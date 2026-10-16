@@ -195,6 +195,31 @@ router.get('/:caseId/evidence', async (req, res, next) => {
 });
 
 /**
+ * POST /api/investigations/:caseId/challenge
+ * Add counter-evidence and rerun the investigation (Challenge & Replay)
+ */
+router.post('/:caseId/challenge', async (req, res, next) => {
+  try {
+    const { caseId } = req.params;
+    const { counterEvidence, counterUrl, reason } = req.body;
+    if (!counterEvidence || counterEvidence.trim().length < 5) {
+      return res.status(400).json({ success: false, error: 'Counter-evidence must be at least 5 characters long.' });
+    }
+    const result = await orchestrator.challengeInvestigation(caseId, {
+      counterEvidence: counterEvidence.trim(),
+      counterUrl: counterUrl?.trim(),
+      reason: reason?.trim()
+    });
+    return res.json({
+      success: true,
+      data: result
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
  * POST /api/investigations/:caseId/retry
  * Retry an eligible failed case
  */
@@ -206,6 +231,103 @@ router.post('/:caseId/retry', async (req, res, next) => {
       success: true,
       data: result
     });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /api/investigations/:caseId/export
+ * Download investigation report as JSON or Markdown
+ */
+router.get('/:caseId/export', async (req, res, next) => {
+  try {
+    const { caseId } = req.params;
+    const { format = 'json' } = req.query;
+    const caseDoc = await CaseRepository.findOneByCaseId(caseId);
+    if (!caseDoc) {
+      return res.status(404).json({ success: false, error: `Investigation case "${caseId}" not found.` });
+    }
+    const evidence = await EvidenceRepository.findByCaseId(caseId);
+
+    if (format === 'markdown' || format === 'md') {
+      const v = caseDoc.verdict;
+      const md = `# GhostNet AI Courtroom Investigation Report: ${caseDoc.caseId}
+**Indicted Claim**: "${caseDoc.originalClaim}"
+**Docket Title**: ${caseDoc.title}
+**Category**: ${caseDoc.category}
+**Status**: ${caseDoc.status}
+**Empanelled At**: ${caseDoc.createdAt}
+**Verdict Concluded At**: ${caseDoc.completedAt || 'In Session'}
+
+---
+
+## 1. JUDICIAL RULING (Gemma 4 Judge)
+- **Official Ruling**: **${v?.verdict || 'PENDING'}**
+- **Executive Summary**: ${v?.summary || 'No summary rendered.'}
+- **Judicial Synthesis & Reasoning**: ${v?.reasoning || 'No reasoning rendered.'}
+- **Confidence Assessment**: ${v?.confidenceAssessment || 'Deterministic primary citation alignment'}
+- **Confidence Caveat/Limitations**: ${v?.confidenceLimitations || 'None'}
+
+---
+
+## 2. EVIDENTIARY CONNECTION FLOW
+1. **Indicted Claim**: "${caseDoc.originalClaim}"
+2. **Corroborating Findings**:
+${(v?.supportingFindings || []).map(f => `   - ${f}`).join('\n') || '   - None'}
+3. **Contradicting Findings**:
+${(v?.contradictingFindings || []).map(f => `   - ${f}`).join('\n') || '   - None'}
+4. **Normative Evidence Cited**:
+${(v?.citedEvidenceIds || []).map(id => {
+  const ev = evidence.find(e => e.evidenceId === id);
+  return `   - [${id}] ${ev?.sourceTitle || 'Evidence'} (${ev?.sourceDomain || 'N/A'}) - "${ev?.excerpt || ''}"`;
+}).join('\n') || '   - None'}
+
+---
+
+## 3. INDEPENDENT VERIFICATION & CONTRADICTION DETECTOR
+- **Fact-Checker Corroboration**:
+${(caseDoc.agentResults?.factChecker?.claimAssessments || []).map(a => `   - [${a.supported ? 'CORROBORATED' : 'CONTRADICTED'}] ${a.claim}\n     Assessment: ${a.assessment}`).join('\n') || '   - No assessments recorded.'}
+
+---
+
+## 4. AGENT PLEADINGS & ARGUMENTS
+### Ghost Adversarial Premise:
+${caseDoc.agentResults?.ghost?.adversarialArgument || 'N/A'}
+
+### Prosecution Objections:
+${(caseDoc.agentResults?.prosecutor?.objections || []).map(o => `   - Statement: ${o.statement}\n     Objection: ${o.objection}\n     Burden: ${o.requiredEvidence}`).join('\n') || '   - None'}
+
+### Defense Counterarguments:
+${(caseDoc.agentResults?.defense?.counterarguments || []).map(d => `   - Defense: ${d.defenseArgument}\n     Conditions: ${d.conditionsWhereTrue}`).join('\n') || '   - None'}
+
+---
+
+## 5. FULL PRIMARY EVIDENCE LOG (${evidence.length} Records)
+${evidence.map(e => `### [${e.evidenceId}] ${e.sourceTitle}
+- **Domain**: ${e.sourceDomain}
+- **URL**: ${e.sourceURL}
+- **Direction**: ${e.evidenceDirection.toUpperCase()}
+- **Status**: ${e.retrievalStatus}
+- **Excerpt**:
+> ${e.excerpt}
+`).join('\n') || 'No evidence records cataloged.'}
+`;
+      res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+      res.setHeader('Content-Disposition', `attachment; filename="GhostNet-Case-${caseId}-Report.md"`);
+      return res.send(md);
+    }
+
+    const payload = {
+      courtroom: 'GhostNet Autonomous Multi-Agent Courtroom',
+      judgeModel: 'Gemma 4 Judge',
+      exportedAt: new Date().toISOString(),
+      case: caseDoc,
+      evidence
+    };
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="GhostNet-Case-${caseId}-Report.json"`);
+    return res.json(payload);
   } catch (err) {
     next(err);
   }

@@ -1,6 +1,15 @@
 export type Category = 'general' | 'programming' | 'news' | 'decision';
 export type CaseStatus = 'queued' | 'in_progress' | 'completed' | 'failed' | 'partial';
-export type VerdictType = 'TRUE' | 'FALSE' | 'PARTIALLY TRUE' | 'MISLEADING' | 'INSUFFICIENT EVIDENCE';
+export type VerdictType =
+  | 'Supported'
+  | 'Refuted'
+  | 'Mixed'
+  | 'Insufficient Evidence'
+  | 'TRUE'
+  | 'FALSE'
+  | 'PARTIALLY TRUE'
+  | 'MISLEADING'
+  | 'INSUFFICIENT EVIDENCE';
 export type EvidenceDirection = 'supports' | 'contradicts' | 'context';
 export type SourceType = 'official_doc' | 'primary_source' | 'reputable_publication' | 'code_spec' | 'general_web';
 export type RetrievalStatus = 'verified' | 'unavailable' | 'snippet_only';

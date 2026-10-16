@@ -20,9 +20,12 @@ export function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/investigate" element={<NewInvestigation />} />
+            <Route path="/intake" element={<NewInvestigation />} />
             <Route path="/courtroom/:caseId" element={<Courtroom />} />
+            <Route path="/verdict/:caseId" element={<Courtroom />} />
             <Route path="/history" element={<CaseHistory />} />
             <Route path="/evidence" element={<EvidenceVault />} />
+            <Route path="/evidence-wall" element={<EvidenceVault />} />
             <Route path="/lab" element={<HallucinationLab />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />

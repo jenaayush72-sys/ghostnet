@@ -15,9 +15,10 @@ export const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { to: '/dashboard', label: 'Dashboard', icon: Terminal },
+    { to: '/intake', label: '1. Intake Desk', icon: ShieldAlert },
+    { to: '/dashboard', label: '2. Courtroom Dockets', icon: Terminal },
+    { to: '/evidence-wall', label: '3. Evidence Wall', icon: BookOpen },
     { to: '/history', label: 'History', icon: Clock },
-    { to: '/evidence', label: 'Evidence', icon: BookOpen },
     { to: '/lab', label: 'Hallucination Lab', icon: Sparkles },
     { to: '/settings', label: 'Settings', icon: Settings },
   ];
