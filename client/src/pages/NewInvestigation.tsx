@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Scale, ShieldAlert, Code2, Newspaper, HelpCircle, Compass,
-  ArrowRight, Loader2, Link2, AlertCircle, FileText
+  ArrowRight, Loader2, Link2, AlertCircle, FileText, Sparkles
 } from 'lucide-react';
 import { api } from '../services/api';
 import { Category } from '../types';
 
 export const NewInvestigation: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const initialClaim = (location.state as any)?.claim || '';
 
-  const [claim, setClaim] = useState('');
+  const [claim, setClaim] = useState(initialClaim);
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<Category>('general');
   const [context, setContext] = useState('');
@@ -18,30 +20,34 @@ export const NewInvestigation: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const categories: { id: Category; label: string; icon: React.ElementType; description: string }[] = [
+  const categories: { id: Category; label: string; icon: React.ElementType; description: string; color: string }[] = [
     {
       id: 'general',
       label: 'Factual Claim',
       icon: HelpCircle,
-      description: 'Historical, scientific, or factual assertion'
+      description: 'Historical, scientific, or factual assertion',
+      color: 'bg-[#56b29e]'
     },
     {
       id: 'programming',
       label: 'Code / Technical',
       icon: Code2,
-      description: 'Language semantics, APIs, and frameworks'
+      description: 'Language semantics, APIs, and frameworks',
+      color: 'bg-[#f8c33c]'
     },
     {
       id: 'news',
-      label: 'News & Current Event',
+      label: 'News & Event',
       icon: Newspaper,
-      description: 'Recent reporting, policy, or current affairs'
+      description: 'Recent reporting, policy, or current affairs',
+      color: 'bg-[#f47a22]'
     },
     {
       id: 'decision',
       label: 'Argument / Policy',
       icon: Compass,
-      description: 'Decisions and complex propositions'
+      description: 'Complex reasoning and disputed propositions',
+      color: 'bg-[#f28cbf]'
     }
   ];
 
@@ -79,34 +85,30 @@ export const NewInvestigation: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div className="mb-8">
-        <div className="flex items-center gap-2 text-xs font-mono-code text-amber-400 uppercase tracking-wider mb-1">
-          <Scale className="w-4 h-4" />
-          <span>Filing of Indictment</span>
-        </div>
-        <h1 className="text-3xl font-extrabold text-gray-100 tracking-tight">
-          Empanel a New Trial
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* Page Header */}
+      <div className="p-6 sm:p-8 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] relative dots">
+        <div className="tag-sticker yellow mb-3">FILING OF INDICTMENT</div>
+        <h1 className="font-brand font-black text-4xl sm:text-6xl text-[#1d1b18] uppercase leading-none">
+          EMPANEL A NEW TRIAL.
         </h1>
-        <p className="text-sm text-gray-400 mt-1">
-          Submit any AI output, technical explanation, or disputed claim to the autonomous courtroom.
+        <p className="text-sm font-semibold text-[#6e665b] mt-2 max-w-xl">
+          Submit any generative response, technical code snippet, or disputed factual statement to the autonomous courtroom.
         </p>
       </div>
 
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 shrink-0 text-rose-400 mt-0.5" />
-          <div>
-            <h4 className="font-semibold">Validation Error</h4>
-            <p className="text-xs text-rose-300 mt-0.5">{error}</p>
-          </div>
+        <div className="p-4 rounded-[16px] bg-[#e5452f] text-white border-[2.5px] border-[#1d1b18] shadow-[2px_2px_0px_#1d1b18] text-sm font-bold flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 shrink-0" />
+          <span>{error}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Main Form Panel */}
+      <form onSubmit={handleSubmit} className="p-6 sm:p-8 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] space-y-6">
         {/* Category Selector */}
         <div>
-          <label className="block text-xs font-mono-code uppercase text-gray-400 mb-2">
+          <label className="block font-brand font-black text-sm uppercase tracking-wider text-[#1d1b18] mb-2">
             1. Select Category
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -118,17 +120,17 @@ export const NewInvestigation: React.FC = () => {
                   key={cat.id}
                   type="button"
                   onClick={() => setCategory(cat.id)}
-                  className={`p-4 rounded-xl border text-left transition-all ${
+                  className={`p-4 rounded-[16px] border-[2px] border-[#1d1b18] text-left transition-all ${
                     isSelected
-                      ? 'border-amber-500/50 bg-[#161B24] ring-1 ring-amber-500/30'
-                      : 'border-[#232A36] bg-[#10141B] hover:border-[#323C4D] text-gray-400'
+                      ? `${cat.color} text-[#1d1b18] shadow-[2px_2px_0px_#1d1b18] scale-[1.02]`
+                      : 'bg-[#f1e4cf] text-[#3a352e] hover:bg-[#ebdcc4]'
                   }`}
                 >
-                  <Icon className={`w-5 h-5 mb-2 ${isSelected ? 'text-amber-400' : 'text-gray-500'}`} />
-                  <h4 className={`text-sm font-semibold ${isSelected ? 'text-gray-100' : 'text-gray-300'}`}>
+                  <Icon className="w-5 h-5 mb-2 text-[#1d1b18]" />
+                  <h4 className="font-brand font-black text-lg uppercase leading-tight text-[#1d1b18]">
                     {cat.label}
                   </h4>
-                  <p className="text-[11px] text-gray-400 mt-1 leading-snug">
+                  <p className="text-[11px] font-semibold text-[#1d1b18]/80 mt-1 leading-snug">
                     {cat.description}
                   </p>
                 </button>
@@ -137,13 +139,13 @@ export const NewInvestigation: React.FC = () => {
           </div>
         </div>
 
-        {/* Claim Text Input */}
+        {/* Claim Text Area */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-xs font-mono-code uppercase text-gray-400">
-              2. Claim / AI Output to Put on Trial <span className="text-amber-400">*</span>
+            <label className="font-brand font-black text-sm uppercase tracking-wider text-[#1d1b18]">
+              2. Claim / AI Output to Put on Trial *
             </label>
-            <span className={`text-xs font-mono-code ${claim.length > 2800 ? 'text-rose-400' : 'text-gray-400'}`}>
+            <span className="font-brand font-bold text-xs text-[#6e665b]">
               {claim.length} / 3000 chars
             </span>
           </div>
@@ -152,83 +154,82 @@ export const NewInvestigation: React.FC = () => {
             rows={5}
             value={claim}
             onChange={(e) => setClaim(e.target.value)}
-            placeholder="Paste the statement, generated response, or technical claim under trial here..."
-            className="w-full px-4 py-3 rounded-xl bg-[#0B0E13] border border-[#232A36] focus:border-amber-500/60 focus:ring-1 focus:ring-amber-500 text-sm text-gray-100 placeholder-gray-500 font-sans transition-all leading-relaxed"
+            placeholder="Paste the statement, code explanation, or disputed premise here..."
+            className="rift-input font-medium leading-relaxed"
           />
         </div>
 
         {/* Optional Title */}
         <div>
-          <label className="block text-xs font-mono-code uppercase text-gray-400 mb-2">
-            3. Docket Title <span className="text-gray-500">(Optional)</span>
+          <label className="block font-brand font-black text-sm uppercase tracking-wider text-[#1d1b18] mb-2">
+            3. Docket Title <span className="text-[#6e665b] font-normal">(Optional)</span>
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. JavaScript Event Loop Macrotask Execution Order"
-            className="w-full px-4 py-2.5 rounded-xl bg-[#0B0E13] border border-[#232A36] focus:border-amber-500/60 focus:ring-1 focus:ring-amber-500 text-sm text-gray-100 placeholder-gray-500 font-sans transition-all"
+            placeholder="e.g. JavaScript Event Loop Microtask Execution Order"
+            className="rift-input"
           />
         </div>
 
-        {/* Optional Context & Source URL */}
+        {/* Context & Source URL */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-mono-code uppercase text-gray-400 mb-2">
-              4. Additional Context <span className="text-gray-500">(Optional)</span>
+            <label className="block font-brand font-black text-sm uppercase tracking-wider text-[#1d1b18] mb-2">
+              4. Additional Context <span className="text-[#6e665b] font-normal">(Optional)</span>
             </label>
             <textarea
               rows={3}
               value={context}
               onChange={(e) => setContext(e.target.value)}
-              placeholder="Background conditions, prompt used to generate answer, or test environment details..."
-              className="w-full px-4 py-2.5 rounded-xl bg-[#0B0E13] border border-[#232A36] focus:border-amber-500/60 focus:ring-1 focus:ring-amber-500 text-sm text-gray-100 placeholder-gray-500 font-sans transition-all"
+              placeholder="Background conditions, prompt used, or specific testing environment..."
+              className="rift-input"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-mono-code uppercase text-gray-400 mb-2 flex items-center gap-1.5">
-              <Link2 className="w-3.5 h-3.5 text-gray-400" />
-              <span>5. Reference / Source URL <span className="text-gray-500">(Optional)</span></span>
+            <label className="block font-brand font-black text-sm uppercase tracking-wider text-[#1d1b18] mb-2 flex items-center gap-1.5">
+              <Link2 className="w-3.5 h-3.5 text-[#1d1b18]" />
+              <span>5. Reference URL <span className="text-[#6e665b] font-normal">(Optional)</span></span>
             </label>
             <input
               type="url"
               value={sourceUrl}
               onChange={(e) => setSourceUrl(e.target.value)}
-              placeholder="https://..."
-              className="w-full px-4 py-2.5 rounded-xl bg-[#0B0E13] border border-[#232A36] focus:border-amber-500/60 focus:ring-1 focus:ring-amber-500 text-sm text-gray-100 placeholder-gray-500 font-sans transition-all"
+              placeholder="https://docs.python.org/..."
+              className="rift-input"
             />
-            <p className="text-[11px] text-gray-400 mt-1.5">
-              Provide an official documentation link if known. The Evidence Agent will verify it against the claim.
+            <p className="text-[11px] font-semibold text-[#6e665b] mt-1.5">
+              The Evidence Agent will crawl and verify this URL against the indicted statement.
             </p>
           </div>
         </div>
 
-        {/* Submit Button */}
-        <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#1C222C]">
+        {/* Action Buttons */}
+        <div className="pt-4 flex items-center justify-end gap-3 border-t-2 border-[#1d1b18]">
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
-            className="px-4 py-2.5 rounded-lg border border-[#232A36] hover:bg-[#151921] text-gray-300 text-sm font-semibold transition-colors"
+            className="btn ghost font-brand font-black border-2 border-[#1d1b18]"
           >
-            Cancel
+            CANCEL
           </button>
 
           <button
             type="submit"
             disabled={claim.trim().length < 5 || isSubmitting}
-            className="px-6 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-gray-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/10 flex items-center gap-2"
+            className="btn arrow font-brand text-sm font-black disabled:opacity-50"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Empanelling Courtroom...</span>
+                <Loader2 className="w-4 h-4 animate-spin text-[#1d1b18]" />
+                <span>EMPANELLING COURTROOM...</span>
               </>
             ) : (
               <>
-                <ShieldAlert className="w-4 h-4" />
-                <span>Empanel Trial</span>
-                <ArrowRight className="w-4 h-4 ml-1" />
+                <ShieldAlert className="w-4 h-4 text-[#1d1b18]" />
+                <span>EMPANEL TRIAL</span>
               </>
             )}
           </button>

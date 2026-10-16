@@ -13,7 +13,7 @@ import { SettingsPage } from './pages/SettingsPage';
 export function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#090B0E] text-gray-100 flex flex-col font-sans selection:bg-amber-500/30 selection:text-amber-200">
+      <div className="min-h-screen bg-[#f1e4cf] text-[#1d1b18] flex flex-col font-sans selection:bg-[#f8c33c] selection:text-[#1d1b18]">
         <Navbar />
         <main className="flex-1">
           <Routes>

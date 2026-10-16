@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Sparkles, Ghost, AlertTriangle, ArrowRight, Code2,
-  CheckCircle2, XCircle, Loader2, Bug, Play
+  CheckCircle2, XCircle, Loader2, Bug, Play, Terminal
 } from 'lucide-react';
 import { api } from '../services/api';
 
@@ -75,154 +75,117 @@ export const HallucinationLab: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 text-xs font-mono-code text-amber-400 uppercase tracking-wider mb-1">
-          <Sparkles className="w-4 h-4" />
-          <span>Special Interrogation Suite</span>
-        </div>
-        <h1 className="text-3xl font-extrabold text-gray-100 tracking-tight">
-          Hallucination Injection Lab
+      {/* Header Banner */}
+      <div className="p-6 sm:p-8 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] relative dots">
+        <div className="tag-sticker pink mb-3">SPECIAL INTERROGATION SUITE</div>
+        <h1 className="font-brand font-black text-4xl sm:text-6xl text-[#1d1b18] uppercase leading-none">
+          HALLUCINATION INJECTION LAB.
         </h1>
-        <p className="text-sm text-gray-400 mt-1 max-w-3xl leading-relaxed">
-          Submit tricky AI outputs, flawed code snippets, or architectural fallacies.
-          The Ghost Agent will construct a deliberately deceptive counter-perspective to determine if the courtroom can isolate the subtle hallucination through primary evidence.
+        <p className="text-sm font-semibold text-[#6e665b] mt-2 max-w-2xl">
+          Submit tricky AI code outputs, edge fallacies, or inverted specifications. The Ghost Agent will synthesize an adversarial counter-thesis to stress test the courtroom's fact-checking rigor.
         </p>
       </div>
 
       {/* Mandatory Adversarial Warning Banner */}
-      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono-code flex items-start gap-3">
-        <AlertTriangle className="w-5 h-5 shrink-0 text-amber-400 mt-0.5" />
+      <div className="p-4 rounded-[18px] bg-[#f47a22] text-[#fff] border-[2.5px] border-[#1d1b18] shadow-[2px_2px_0px_#1d1b18] flex items-center gap-3">
+        <AlertTriangle className="w-6 h-6 shrink-0 text-[#fff]" />
         <div>
-          <span className="font-bold tracking-wide">ADVERSARIAL TEST ARGUMENT — NOT VERIFIED FACT</span>
-          <p className="text-[11px] text-amber-300/80 mt-0.5 font-sans">
-            Arguments generated inside this laboratory are intentionally engineered with hidden logical fallacies, edge-case traps, and inverted specifications to test verification resilience.
+          <span className="font-brand font-black text-base uppercase tracking-wider block leading-tight">
+            ADVERSARIAL TEST ARGUMENT — NOT VERIFIED FACT
+          </span>
+          <p className="text-xs font-semibold opacity-90 mt-0.5">
+            Arguments inside this suite are intentionally engineered with hidden logical traps and edge fallacies.
           </p>
         </div>
       </div>
 
-      {/* Preset Scenarios Selector */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {PRESET_HALLUCINATIONS.map((preset, idx) => (
-          <button
-            key={preset.title}
-            onClick={() => setSelectedPreset(idx)}
-            className={`p-4 rounded-xl border text-left transition-all ${
-              selectedPreset === idx
-                ? 'border-amber-500 bg-[#161B24] ring-1 ring-amber-500/40'
-                : 'border-[#232A36] bg-[#10141B] hover:border-[#323C4D] text-gray-400'
-            }`}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] uppercase font-mono-code px-2 py-0.5 rounded bg-[#1C222C] text-amber-400 border border-amber-500/20">
-                Preset {idx + 1}
-              </span>
-              <Bug className="w-4 h-4 text-gray-500" />
-            </div>
-            <h4 className="text-sm font-semibold text-gray-200">{preset.title}</h4>
-            <p className="text-xs text-gray-500 mt-1">{preset.type}</p>
-          </button>
-        ))}
+      {/* Preset Selector Grid */}
+      <div className="space-y-4">
+        <h3 className="font-brand font-black text-2xl text-[#1d1b18] uppercase">
+          1. Select Known Fallacy Preset
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {PRESET_HALLUCINATIONS.map((preset, idx) => {
+            const isSelected = selectedPreset === idx;
+            const colors = ['bg-[#56b29e]', 'bg-[#f8c33c]', 'bg-[#f28cbf]'];
+            const activeColor = colors[idx % colors.length];
+
+            return (
+              <button
+                key={preset.title}
+                type="button"
+                onClick={() => setSelectedPreset(idx)}
+                className={`p-5 rounded-[20px] border-[2.5px] border-[#1d1b18] text-left transition-all ${
+                  isSelected
+                    ? `${activeColor} shadow-[3px_3px_0px_#1d1b18] scale-[1.02] ring-2 ring-[#1d1b18]`
+                    : 'bg-[#f8eedc] hover:bg-[#eae0cd] shadow-[2px_2px_0px_#1d1b18]'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-brand font-black text-xl text-[#1d1b18]">0{idx + 1}</span>
+                  <span className="text-[10px] font-brand font-black uppercase px-2 py-0.5 rounded-full bg-[#1d1b18] text-[#f8eedc]">
+                    PRESET
+                  </span>
+                </div>
+                <h4 className="font-brand font-black text-xl text-[#1d1b18] leading-tight uppercase">
+                  {preset.title}
+                </h4>
+                <p className="text-xs font-semibold text-[#1d1b18]/80 mt-1">
+                  {preset.type}
+                </p>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Active Scenario Inspector */}
-      <div className="rounded-2xl border border-[#232A36] bg-[#10141B] p-6 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#1E2532]">
-          <div>
-            <span className="text-xs font-mono-code text-gray-400 uppercase">
-              Hallucination Scenario
-            </span>
-            <h3 className="text-xl font-bold text-gray-100 mt-0.5">
-              {activePreset.title}
-            </h3>
-          </div>
-
-          <button
-            onClick={() => handleLaunchTrial(activePreset.claim, activePreset.codeSnippet)}
-            disabled={isSubmitting}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-gray-950 font-bold text-xs uppercase tracking-wider font-mono-code transition-all shadow-md shadow-amber-500/10"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Dispatching Trial...</span>
-              </>
-            ) : (
-              <>
-                <Play className="w-4 h-4 fill-gray-950" />
-                <span>Put Flawed Claim on Trial</span>
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Claim Under Trial */}
+      {/* Active Preset Interrogation Panel */}
+      <div className="p-6 sm:p-8 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] space-y-6">
         <div>
-          <h4 className="text-xs uppercase font-mono-code text-gray-400 mb-1.5">
-            1. Deceptive / Flawed Assertion:
-          </h4>
-          <p className="text-sm text-gray-200 font-medium bg-[#0B0E13] p-4 rounded-xl border border-[#232A36] leading-relaxed">
-            "{activePreset.claim}"
+          <span className="tag-sticker yellow mb-2">ACTIVE CODE INTERROGATION</span>
+          <h3 className="font-brand font-black text-3xl text-[#1d1b18] uppercase mt-2">
+            "{activePreset.title}"
+          </h3>
+          <p className="text-sm font-semibold text-[#3a352e] mt-1.5 leading-relaxed bg-[#f1e4cf] p-4 rounded-[14px] border-2 border-[#1d1b18]">
+            <b className="uppercase text-[#1d1b18]">Claim on Trial: </b>
+            {activePreset.claim}
           </p>
         </div>
 
-        {/* Code Snippet Under Analysis */}
         <div>
-          <h4 className="text-xs uppercase font-mono-code text-gray-400 mb-1.5 flex items-center gap-1.5">
-            <Code2 className="w-4 h-4 text-amber-400" />
-            <span>2. Code Snippet Subject to Cross-Examination:</span>
-          </h4>
-          <pre className="p-4 rounded-xl bg-[#07090C] border border-[#232A36] text-xs font-mono-code text-amber-300/90 overflow-x-auto leading-relaxed">
+          <label className="block font-brand font-black text-xs uppercase text-[#1d1b18] mb-1.5 flex items-center gap-1.5">
+            <Terminal className="w-3.5 h-3.5" />
+            <span>Target Code Snippet</span>
+          </label>
+          <pre className="p-4 rounded-[14px] bg-[#1d1b18] text-[#f8eedc] border-2 border-[#1d1b18] text-xs font-mono-code overflow-x-auto leading-relaxed">
             {activePreset.codeSnippet}
           </pre>
         </div>
 
-        {/* Proposed Test Specification */}
-        <div className="p-4 rounded-xl bg-[#12161E] border border-[#273243]">
-          <h4 className="text-xs font-mono-code uppercase text-emerald-400 mb-1 flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4" />
-            <span>3. Proposed Evidentiary Sandbox Test Specification:</span>
-          </h4>
-          <p className="text-xs text-gray-300 font-mono-code">
-            {activePreset.proposedTest}
-          </p>
+        <div className="p-4 rounded-[14px] bg-[#f1e4cf] border-2 border-[#1d1b18] text-xs font-semibold text-[#3a352e]">
+          <b className="uppercase text-[#1d1b18] block mb-1">Proposed Falsification Test:</b>
+          {activePreset.proposedTest}
         </div>
-      </div>
 
-      {/* Custom Hallucination Injection Section */}
-      <div className="rounded-2xl border border-[#232A36] bg-[#10141B] p-6 space-y-4">
-        <h3 className="text-base font-bold text-gray-100 font-mono-code flex items-center gap-2">
-          <Ghost className="w-5 h-5 text-amber-400" />
-          Inject Custom Code or Explanation
-        </h3>
-        <p className="text-xs text-gray-400">
-          Want to test an answer an LLM gave you? Paste the claim and optional snippet below:
-        </p>
-
-        <div className="space-y-3">
-          <input
-            type="text"
-            value={customClaim}
-            onChange={(e) => setCustomClaim(e.target.value)}
-            placeholder="Enter the AI statement or claim to test..."
-            className="w-full px-4 py-2.5 rounded-xl bg-[#090B0E] border border-[#232A36] focus:border-amber-500 text-xs text-gray-100 placeholder-gray-500"
-          />
-
-          <textarea
-            rows={3}
-            value={customCode}
-            onChange={(e) => setCustomCode(e.target.value)}
-            placeholder="Optional code snippet or context..."
-            className="w-full px-4 py-2.5 rounded-xl bg-[#090B0E] border border-[#232A36] focus:border-amber-500 text-xs text-gray-100 font-mono-code placeholder-gray-500"
-          />
-
+        <div className="pt-2 flex items-center justify-end">
           <button
-            onClick={() => handleLaunchTrial(customClaim, customCode)}
-            disabled={customClaim.trim().length < 5 || isSubmitting}
-            className="px-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-gray-950 font-bold text-xs uppercase font-mono-code tracking-wider flex items-center gap-1.5"
+            type="button"
+            onClick={() => handleLaunchTrial(activePreset.claim, activePreset.codeSnippet)}
+            disabled={isSubmitting}
+            className="btn arrow font-brand text-sm font-black disabled:opacity-50"
           >
-            <span>Launch Adversarial Trial</span>
-            <ArrowRight className="w-4 h-4" />
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin text-[#1d1b18]" />
+                <span>EMPANELLING LAB TRIAL...</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-4 h-4 fill-current text-[#1d1b18]" />
+                <span>EMPANEL LAB TRIAL NOW</span>
+              </>
+            )}
           </button>
         </div>
       </div>

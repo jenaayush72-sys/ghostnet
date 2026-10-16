@@ -16,70 +16,56 @@ const AGENT_CONFIGS: Record<AgentRole, {
   title: string;
   roleDescription: string;
   icon: React.ElementType;
-  accentBorder: string;
-  accentBg: string;
-  accentText: string;
-  badgeBg: string;
+  color: string;
+  badge: string;
 }> = {
   ghost: {
     name: 'Ghost Agent',
     title: 'Adversarial Flaw Injector',
     roleDescription: 'Formulates deliberately flawed premises to test factual resilience.',
     icon: Ghost,
-    accentBorder: 'border-amber-500/40',
-    accentBg: 'bg-amber-500/5',
-    accentText: 'text-amber-400',
-    badgeBg: 'bg-amber-500/10 text-amber-300 border-amber-500/20'
+    color: 'bg-[#56b29e]',
+    badge: 'PROBE'
   },
   prosecutor: {
     name: 'Prosecutor Agent',
-    title: 'Inaccuracy & Fallacy Prosecutor',
+    title: 'Inaccuracy Prosecutor',
     roleDescription: 'Files formal objections against unsupported assumptions and causal leaps.',
     icon: ShieldX,
-    accentBorder: 'border-rose-500/40',
-    accentBg: 'bg-rose-500/5',
-    accentText: 'text-rose-400',
-    badgeBg: 'bg-rose-500/10 text-rose-300 border-rose-500/20'
+    color: 'bg-[#f47a22]',
+    badge: 'OBJECTION'
   },
   defense: {
     name: 'Defense Agent',
     title: 'Nuance & Contextual Defense',
     roleDescription: 'Tests the strength of prosecution and clarifies operational boundary conditions.',
     icon: ShieldCheck,
-    accentBorder: 'border-sky-500/40',
-    accentBg: 'bg-sky-500/5',
-    accentText: 'text-sky-400',
-    badgeBg: 'bg-sky-500/10 text-sky-300 border-sky-500/20'
+    color: 'bg-[#7a8fd8]',
+    badge: 'DEFENSE'
   },
   evidence: {
     name: 'Evidence Agent',
     title: 'Primary Source Harvester',
     roleDescription: 'Indexes official specifications, documentation, and verified publications.',
     icon: Search,
-    accentBorder: 'border-emerald-500/40',
-    accentBg: 'bg-emerald-500/5',
-    accentText: 'text-emerald-400',
-    badgeBg: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
+    color: 'bg-[#5fb2e6]',
+    badge: 'EVIDENCE'
   },
   factChecker: {
     name: 'Fact-Checker Agent',
     title: 'Independent Evidence Auditor',
     roleDescription: 'Audits claims against source excerpts to eliminate confirmation bias.',
     icon: FileCheck,
-    accentBorder: 'border-purple-500/40',
-    accentBg: 'bg-purple-500/5',
-    accentText: 'text-purple-400',
-    badgeBg: 'bg-purple-500/10 text-purple-300 border-purple-500/20'
+    color: 'bg-[#f28cbf]',
+    badge: 'AUDIT'
   },
   judge: {
     name: 'Judge Agent',
     title: 'Supreme Judicial Adjudicator',
     roleDescription: 'Weighs evidence priority over agent agreement to issue binding verdict.',
     icon: Gavel,
-    accentBorder: 'border-yellow-500/50',
-    accentBg: 'bg-yellow-500/5',
-    accentText: 'text-yellow-400',
-    badgeBg: 'bg-yellow-500/10 text-yellow-300 border-yellow-500/30'
+    color: 'bg-[#f8c33c]',
+    badge: 'VERDICT'
   }
 };
 
@@ -95,79 +81,67 @@ export const AgentCard: React.FC<AgentCardProps> = ({
 
   return (
     <div
-      className={`relative rounded-xl border p-4 transition-all duration-300 ${
+      className={`relative rounded-[18px] border-[2.5px] border-[#1d1b18] p-4 transition-all ${
         isActive
-          ? `${config.accentBorder} ${config.accentBg} shadow-lg shadow-black/40 ring-1 ring-amber-500/30`
+          ? `${config.color} shadow-[3px_3px_0px_#1d1b18] scale-[1.02] ring-2 ring-[#1d1b18]`
           : isCompleted
-          ? 'border-[#272E3D] bg-[#12161E]/90'
-          : 'border-[#1C222C] bg-[#0F1318]/60 opacity-65'
+          ? 'bg-[#f8eedc] shadow-[2px_2px_0px_#1d1b18]'
+          : 'bg-[#f1e4cf] opacity-60'
       }`}
     >
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-2.5">
           <div
-            className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-colors ${
+            className={`w-9 h-9 rounded-full flex items-center justify-center border-2 border-[#1d1b18] ${
               isActive || isCompleted
-                ? `${config.accentBorder} ${config.accentText} bg-[#161B24]`
-                : 'border-[#272E3D] text-gray-500 bg-[#12161E]'
+                ? 'bg-[#1d1b18] text-[#f8eedc]'
+                : 'bg-[#f8eedc] text-[#6e665b]'
             }`}
           >
-            <Icon className="w-4 h-4" />
+            <Icon className="w-4 h-4 text-[#f8c33c]" />
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-gray-100 flex items-center gap-1.5 font-mono-code">
+            <h4 className="font-brand font-black text-lg uppercase tracking-tight text-[#1d1b18] leading-tight">
               {config.name}
             </h4>
-            <p className="text-[11px] text-gray-400">{config.title}</p>
+            <p className="text-[10px] font-bold uppercase text-[#6e665b]">
+              {config.title}
+            </p>
           </div>
         </div>
 
-        {/* Status Pill */}
+        {/* Status indicator badge */}
         <div>
           {isActive ? (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse font-mono-code">
+            <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#1d1b18] text-[#f8c33c] text-[10px] font-brand font-black uppercase tracking-wider animate-pulse">
               <Loader2 className="w-3 h-3 animate-spin" />
-              ACTIVE
+              DELIBERATING
             </span>
           ) : isCompleted ? (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 font-mono-code">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-              DONE
+            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#56b29e] text-[#1d1b18] border border-[#1d1b18] text-[10px] font-brand font-black uppercase tracking-wider">
+              <CheckCircle2 className="w-3 h-3" />
+              FILED
             </span>
           ) : (
-            <span className="px-2 py-0.5 rounded-full text-[10px] text-gray-400 bg-[#161A22] border border-[#232A36] font-mono-code">
+            <span className="px-2 py-0.5 rounded-full bg-[#f1e4cf] text-[#6e665b] border border-[#1d1b18]/40 text-[10px] font-brand font-bold uppercase">
               STANDBY
             </span>
           )}
         </div>
       </div>
 
-      <p className="text-xs text-gray-400 line-clamp-2 mb-3 leading-relaxed">
-        {config.roleDescription}
+      <p className="text-xs font-semibold text-[#3a352e] leading-snug line-clamp-2 mt-2">
+        {currentActivity || config.roleDescription}
       </p>
 
-      {/* Activity or Summary Badge */}
-      <div className="pt-2.5 border-t border-[#1F2633] flex items-center justify-between text-xs">
-        <span className="text-gray-400 truncate max-w-[170px] text-[11px]">
-          {isActive ? (
-            <span className="text-amber-300 font-mono-code flex items-center gap-1">
-              {currentActivity || 'Formulating submission...'}
-            </span>
-          ) : isCompleted ? (
-            <span className="text-gray-300">
-              {itemCount !== undefined ? `${itemCount} item(s) logged` : 'Testimony rendered'}
-            </span>
-          ) : (
-            'Awaiting trial stage'
-          )}
-        </span>
-
-        {isCompleted && (
-          <span className={`text-[10px] uppercase font-mono-code px-1.5 py-0.5 rounded border ${config.badgeBg}`}>
-            Verified
+      {itemCount !== undefined && itemCount > 0 && (
+        <div className="mt-3 pt-2 border-t border-[#1d1b18]/20 flex items-center justify-between text-[11px] font-bold text-[#1d1b18]">
+          <span className="uppercase text-[10px] text-[#6e665b]">Artifacts indexed</span>
+          <span className="px-2 py-0.5 rounded-full bg-[#f8c33c] border border-[#1d1b18] font-brand font-black">
+            {itemCount} ITEMS
           </span>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -124,9 +124,9 @@ export const Courtroom: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 text-gray-400">
-        <Loader2 className="w-8 h-8 animate-spin text-amber-400" />
-        <p className="text-xs font-mono-code uppercase tracking-wider">
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 text-[#1d1b18]">
+        <Loader2 className="w-10 h-10 animate-spin text-[#f47a22]" />
+        <p className="font-brand font-black text-xl uppercase tracking-wider">
           Connecting to courtroom chambers for {caseId}...
         </p>
       </div>
@@ -135,15 +135,15 @@ export const Courtroom: React.FC = () => {
 
   if (error || !caseData) {
     return (
-      <div className="max-w-2xl mx-auto my-16 p-8 rounded-2xl bg-rose-950/20 border border-rose-500/30 text-center">
-        <AlertCircle className="w-10 h-10 text-rose-400 mx-auto mb-3" />
-        <h2 className="text-lg font-bold text-gray-100">Trial Docket Unavailable</h2>
-        <p className="text-xs text-rose-300 mt-1 mb-6">{error || 'Requested case does not exist.'}</p>
+      <div className="max-w-2xl mx-auto my-16 p-8 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] text-center">
+        <AlertCircle className="w-12 h-12 text-[#e5452f] mx-auto mb-3" />
+        <h2 className="font-brand font-black text-3xl uppercase text-[#1d1b18]">Trial Docket Unavailable</h2>
+        <p className="text-sm font-semibold text-[#6e665b] mt-1 mb-6">{error || 'Requested case does not exist.'}</p>
         <Link
           to="/dashboard"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1C222C] text-gray-200 text-xs font-mono-code border border-[#2B3545]"
+          className="btn sm font-brand font-black"
         >
-          Return to Dashboard
+          RETURN TO DASHBOARD
         </Link>
       </div>
     );
@@ -194,82 +194,79 @@ export const Courtroom: React.FC = () => {
     }
   };
 
-  // Determine current stage index for progress bar
   const currentStageIndex = STAGES_ORDER.findIndex(s => s.key === currentStage);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* A. CASE HEADER */}
-      <div className="rounded-2xl border border-[#232A36] bg-[#10141B] p-6 shadow-xl space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1E2532]">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <span className="font-mono-code text-sm font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded border border-amber-500/30">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* A. CASE HEADER BENTO */}
+      <div className="rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] p-6 sm:p-8 space-y-5 relative dots">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b-2 border-[#1d1b18]">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-brand font-black text-base text-[#1d1b18] bg-[#f8c33c] px-3 py-1 rounded-full border-2 border-[#1d1b18] uppercase">
               {caseData.caseId}
             </span>
-            <span className="text-xs uppercase font-mono-code px-2.5 py-1 rounded bg-[#171D27] text-gray-300 border border-[#273243]">
-              Category: {caseData.category}
+            <span className="text-xs uppercase font-brand font-black px-3 py-1 rounded-full bg-[#f1e4cf] text-[#1d1b18] border border-[#1d1b18]">
+              CATEGORY: {caseData.category}
             </span>
-            <span className="text-xs text-gray-400 font-mono-code flex items-center gap-1">
+            <span className="text-xs font-bold text-[#6e665b] flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />
               {new Date(caseData.createdAt).toLocaleTimeString()}
             </span>
           </div>
 
           {/* Status Badge & Action buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             {caseData.status === 'in_progress' ? (
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono-code bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse">
-                <Loader2 className="w-3 h-3 animate-spin" />
+              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-brand font-black bg-[#f8c33c] text-[#1d1b18] border-2 border-[#1d1b18] animate-pulse">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 TRIAL IN PROGRESS
               </span>
             ) : caseData.status === 'completed' ? (
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono-code bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-brand font-black bg-[#56b29e] text-[#1d1b18] border-2 border-[#1d1b18]">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 VERDICT RENDERED
               </span>
             ) : caseData.status === 'failed' ? (
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono-code bg-rose-500/20 text-rose-300 border border-rose-500/40">
+              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-brand font-black bg-[#e5452f] text-white border-2 border-[#1d1b18]">
                 <XCircle className="w-3.5 h-3.5" />
                 TRIAL HALTED
               </span>
             ) : (
-              <span className="px-3 py-1 rounded-full text-xs font-mono-code bg-gray-800 text-gray-300">
+              <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#f1e4cf] text-[#1d1b18] border border-[#1d1b18]">
                 EMPANELLED
               </span>
             )}
 
             <button
               onClick={() => setIsEvidenceDrawerOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#171D27] hover:bg-[#202734] border border-[#2A3546] text-xs font-mono-code text-gray-200 transition-colors"
+              className="flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#56b29e] hover:bg-[#4ea591] border-2 border-[#1d1b18] text-xs font-brand font-black text-[#1d1b18] transition-all cursor-pointer shadow-[1.5px_1.5px_0px_#1d1b18]"
             >
-              <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Vault ({evidence.length})</span>
+              <BookOpen className="w-3.5 h-3.5 text-[#1d1b18]" />
+              <span>VAULT ({evidence.length})</span>
             </button>
           </div>
         </div>
 
         {/* Claim Under Trial */}
         <div>
-          <span className="text-[11px] font-mono-code uppercase text-gray-400 block mb-1">
-            Indictment / Claim on Trial:
-          </span>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-100 leading-snug">
+          <span className="tag-sticker yellow mb-2">INDICTMENT / CLAIM ON TRIAL</span>
+          <h1 className="font-brand font-black text-2xl sm:text-4xl text-[#1d1b18] leading-tight uppercase mt-2">
             "{caseData.originalClaim}"
           </h1>
           {caseData.context && (
-            <p className="text-xs text-gray-400 mt-2 bg-[#090C10] p-3 rounded-lg border border-[#1C222C]">
-              <span className="font-semibold text-gray-300 font-mono-code">Factual Context: </span>
+            <p className="text-xs font-medium text-[#3a352e] mt-3 bg-[#f1e4cf] p-3 rounded-[14px] border-2 border-[#1d1b18]">
+              <b className="uppercase text-[#1d1b18]">Factual Context: </b>
               {caseData.context}
             </p>
           )}
         </div>
 
-        {/* D. INVESTIGATION PROGRESS STEPPER */}
+        {/* D. STAGE STEPPER */}
         <div className="pt-2">
-          <div className="flex items-center justify-between text-[11px] font-mono-code text-gray-400 mb-1.5">
+          <div className="flex items-center justify-between text-xs font-brand font-black uppercase text-[#6e665b] mb-1.5">
             <span>Stage Progression</span>
-            <span className="text-amber-400 uppercase">
-              Current: {caseData.currentStage.replace('_', ' ')}
+            <span className="text-[#1d1b18] bg-[#f8c33c] px-2 py-0.5 rounded border border-[#1d1b18]">
+              CURRENT: {caseData.currentStage.replace(/_/g, ' ')}
             </span>
           </div>
           <div className="grid grid-cols-8 gap-1.5">
@@ -279,17 +276,17 @@ export const Courtroom: React.FC = () => {
               return (
                 <div key={stage.key} className="space-y-1">
                   <div
-                    className={`h-1.5 rounded-full transition-all duration-500 ${
+                    className={`h-2.5 rounded-full border border-[#1d1b18] transition-all duration-300 ${
                       isPast
-                        ? 'bg-emerald-500'
+                        ? 'bg-[#56b29e]'
                         : isCurrent
-                        ? 'bg-amber-400 animate-pulse'
-                        : 'bg-[#1F2633]'
+                        ? 'bg-[#f8c33c] animate-pulse'
+                        : 'bg-[#ebdcc4]'
                     }`}
                   />
                   <span
-                    className={`hidden lg:block text-[9px] font-mono-code truncate ${
-                      isCurrent ? 'text-amber-300 font-bold' : isPast ? 'text-gray-400' : 'text-gray-600'
+                    className={`hidden lg:block text-[9px] font-brand font-bold uppercase truncate ${
+                      isCurrent ? 'text-[#1d1b18]' : isPast ? 'text-[#3a352e]' : 'text-[#6e665b]'
                     }`}
                   >
                     {stage.label}
@@ -313,11 +310,10 @@ export const Courtroom: React.FC = () => {
       {/* B. THE 6 AGENT CARDS PANEL */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400 font-mono-code flex items-center gap-2">
-            <Scale className="w-4 h-4 text-amber-400" />
-            Autonomous Agent Chamber
-          </h2>
-          <span className="text-xs text-gray-500 font-mono-code">Six Specialized Roles</span>
+          <div className="tag-sticker teal">AUTONOMOUS AGENT CHAMBER</div>
+          <span className="font-brand font-black text-xs uppercase text-[#6e665b]">
+            Six Specialized Perspectives
+          </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
@@ -367,25 +363,25 @@ export const Courtroom: React.FC = () => {
       </div>
 
       {/* C. DEBATE TIMELINE & DOCKET ENTRIES */}
-      <div className="rounded-2xl border border-[#232A36] bg-[#10141B] p-6 space-y-5">
-        <div className="flex items-center justify-between pb-3 border-b border-[#1E2532]">
+      <div className="rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] p-6 sm:p-8 space-y-5">
+        <div className="flex items-center justify-between pb-3 border-b-2 border-[#1d1b18]">
           <div>
-            <h2 className="text-base font-bold text-gray-100 font-mono-code flex items-center gap-2">
-              <FileText className="w-4 h-4 text-amber-400" />
+            <h2 className="font-brand font-black text-2xl uppercase tracking-tight text-[#1d1b18] flex items-center gap-2">
+              <FileText className="w-5 h-5 text-[#f47a22]" />
               Court Docket Timeline
             </h2>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-xs font-semibold text-[#6e665b] mt-0.5">
               Live transcript of formal agent pleadings, objections, and evidentiary citations.
             </p>
           </div>
-          <span className="text-xs font-mono-code text-gray-400 bg-[#161B24] px-2.5 py-1 rounded border border-[#273243]">
-            {caseData.investigationEvents.length} Filings
+          <span className="px-3 py-1 rounded-full bg-[#f8c33c] border-2 border-[#1d1b18] font-brand font-black text-xs text-[#1d1b18] uppercase">
+            {caseData.investigationEvents.length} FILINGS
           </span>
         </div>
 
         {caseData.investigationEvents.length === 0 ? (
-          <div className="py-12 text-center text-gray-500 font-mono-code text-xs">
-            <Loader2 className="w-5 h-5 animate-spin mx-auto text-amber-400 mb-2" />
+          <div className="py-12 text-center text-[#6e665b] font-brand font-black text-sm uppercase">
+            <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#f47a22] mb-2" />
             Empanelling trial and awaiting first docket entry...
           </div>
         ) : (
@@ -397,68 +393,65 @@ export const Courtroom: React.FC = () => {
               const isDefense = evt.eventType === 'DEFENSE_ARGUMENTS_FILED';
               const isVerdict = evt.eventType === 'VERDICT_RENDERED';
 
+              const cardBorder =
+                isGhostAdversarial ? 'border-[#56b29e] bg-[#56b29e]/15' :
+                isProsecution ? 'border-[#f47a22] bg-[#f47a22]/15' :
+                isDefense ? 'border-[#7a8fd8] bg-[#7a8fd8]/15' :
+                isVerdict ? 'border-[#f8c33c] bg-[#f8c33c]/20' :
+                'border-[#1d1b18] bg-[#f1e4cf]';
+
               return (
                 <div
                   key={evt.eventId}
-                  className={`rounded-xl border p-4 transition-all ${
-                    isGhostAdversarial
-                      ? 'border-amber-500/40 bg-amber-950/10'
-                      : isProsecution
-                      ? 'border-rose-500/40 bg-rose-950/10'
-                      : isDefense
-                      ? 'border-sky-500/40 bg-sky-950/10'
-                      : isVerdict
-                      ? 'border-yellow-500/50 bg-yellow-950/15'
-                      : 'border-[#232A36] bg-[#12161E]'
-                  }`}
+                  className={`rounded-[16px] border-[2px] border-[#1d1b18] p-4 transition-all shadow-[2px_2px_0px_#1d1b18] ${cardBorder}`}
                 >
                   {/* Event Header */}
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold font-mono-code text-gray-200">
+                      <span className="font-brand font-black text-base text-[#1d1b18] uppercase">
                         {evt.agentName}
                       </span>
-                      <span className="text-[10px] font-mono-code uppercase px-2 py-0.5 rounded bg-[#171D27] text-gray-400 border border-[#273243]">
+                      <span className="text-[10px] font-brand font-black uppercase px-2 py-0.5 rounded-full bg-[#1d1b18] text-[#f8eedc]">
                         {evt.eventType.replace(/_/g, ' ')}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] text-gray-400 font-mono-code">
+                      <span className="text-[11px] font-bold text-[#6e665b]">
                         {new Date(evt.timestamp).toLocaleTimeString()}
                       </span>
                       <button
                         onClick={() => toggleEventExpand(evt.eventId)}
-                        className="text-gray-400 hover:text-gray-200 p-1"
+                        className="w-7 h-7 rounded-full bg-[#f8eedc] border border-[#1d1b18] flex items-center justify-center hover:bg-[#ebdcc4] transition-colors"
                       >
-                        {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                        {isExpanded ? <ChevronUp className="w-3.5 h-3.5 text-[#1d1b18]" /> : <ChevronDown className="w-3.5 h-3.5 text-[#1d1b18]" />}
                       </button>
                     </div>
                   </div>
 
                   {/* Ghost Adversarial Special Warning Banner */}
                   {isGhostAdversarial && (
-                    <div className="my-2 px-3 py-1.5 rounded bg-amber-500/20 border border-amber-500/40 text-[11px] font-mono-code font-bold text-amber-300 flex items-center gap-2">
+                    <div className="my-2 px-3 py-1 rounded-[10px] bg-[#f47a22] text-[#fff] border border-[#1d1b18] text-[10px] font-brand font-black uppercase tracking-wider flex items-center gap-2">
                       <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                       <span>ADVERSARIAL TEST ARGUMENT — NOT VERIFIED FACT</span>
                     </div>
                   )}
 
                   {/* Event Content */}
-                  <div className="text-xs text-gray-200 leading-relaxed font-sans">
+                  <div className="text-xs sm:text-sm text-[#1d1b18] font-medium leading-relaxed">
                     {evt.content}
                   </div>
 
                   {/* Structured data rendering if expanded */}
                   {isExpanded && evt.data && (
-                    <div className="mt-3 pt-3 border-t border-[#232A36]/60 text-xs space-y-2">
+                    <div className="mt-3 pt-3 border-t border-[#1d1b18]/20 text-xs space-y-2">
                       {/* Targeted Statements (Ghost) */}
                       {evt.data.targetedStatements && (
                         <div>
-                          <span className="text-[11px] font-mono-code uppercase text-amber-400 block mb-1">
+                          <span className="font-brand font-black text-[11px] uppercase text-[#1d1b18] block mb-1">
                             Premises Under Interrogation:
                           </span>
-                          <ul className="list-disc list-inside space-y-1 text-gray-300 text-[11px]">
+                          <ul className="list-disc list-inside space-y-1 text-[#3a352e] text-xs font-semibold">
                             {evt.data.targetedStatements.map((stmt: string, i: number) => (
                               <li key={i}>{stmt}</li>
                             ))}
@@ -469,19 +462,19 @@ export const Courtroom: React.FC = () => {
                       {/* Objections (Prosecutor) */}
                       {evt.data.objections && Array.isArray(evt.data.objections) && (
                         <div className="space-y-2">
-                          <span className="text-[11px] font-mono-code uppercase text-rose-400 block">
+                          <span className="font-brand font-black text-[11px] uppercase text-[#e5452f] block">
                             Prosecution Objections ({evt.data.objections.length}):
                           </span>
                           {evt.data.objections.map((obj: any, i: number) => (
-                            <div key={i} className="p-2.5 rounded-lg bg-[#0E1218] border border-[#232A36]">
-                              <div className="flex items-center justify-between text-[11px] font-mono-code mb-1">
-                                <span className="text-rose-400 font-semibold">{obj.statement}</span>
-                                <span className="px-1.5 py-0.5 rounded text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                            <div key={i} className="p-3 rounded-[12px] bg-[#f8eedc] border border-[#1d1b18]">
+                              <div className="flex items-center justify-between text-xs font-brand font-black mb-1">
+                                <span className="text-[#e5452f]">{obj.statement}</span>
+                                <span className="px-2 py-0.5 rounded-full text-[10px] bg-[#e5452f] text-white border border-[#1d1b18]">
                                   {obj.severity}
                                 </span>
                               </div>
-                              <p className="text-gray-300 text-[11px]">{obj.objection}</p>
-                              <p className="text-gray-400 text-[10px] mt-1 font-mono-code">
+                              <p className="text-[#1d1b18] text-xs font-medium">{obj.objection}</p>
+                              <p className="text-[#6e665b] text-[11px] mt-1 font-mono-code font-bold">
                                 Evidentiary Burden: {obj.requiredEvidence}
                               </p>
                             </div>
@@ -492,13 +485,13 @@ export const Courtroom: React.FC = () => {
                       {/* Counterarguments (Defense) */}
                       {evt.data.counterarguments && Array.isArray(evt.data.counterarguments) && (
                         <div className="space-y-2">
-                          <span className="text-[11px] font-mono-code uppercase text-sky-400 block">
+                          <span className="font-brand font-black text-[11px] uppercase text-[#7a8fd8] block">
                             Defense Counterarguments:
                           </span>
                           {evt.data.counterarguments.map((cnt: any, i: number) => (
-                            <div key={i} className="p-2.5 rounded-lg bg-[#0E1218] border border-[#232A36]">
-                              <p className="text-sky-300 text-[11px] font-medium">{cnt.defenseArgument}</p>
-                              <p className="text-gray-400 text-[10px] mt-1 font-mono-code">
+                            <div key={i} className="p-3 rounded-[12px] bg-[#f8eedc] border border-[#1d1b18]">
+                              <p className="text-[#1d1b18] text-xs font-bold">{cnt.defenseArgument}</p>
+                              <p className="text-[#6e665b] text-[11px] mt-1 font-mono-code font-bold">
                                 Conditions Where True: {cnt.conditionsWhereTrue}
                               </p>
                             </div>
@@ -516,24 +509,24 @@ export const Courtroom: React.FC = () => {
       </div>
 
       {/* G. CASE ACTIONS */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-5 rounded-2xl bg-[#12161E] border border-[#232A36]">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:p-6 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18]">
+        <div className="flex items-center gap-2.5">
           {caseData.verdict && (
             <button
               onClick={() => copyToClipboard(caseData.verdict?.summary || '', 'verdict')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#181E29] hover:bg-[#222B3B] border border-[#2C384B] text-xs font-mono-code text-gray-200 transition-colors"
+              className="btn sm ghost font-brand font-black border-2 border-[#1d1b18]"
             >
-              {copiedText === 'verdict' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-gray-400" />}
-              <span>{copiedText === 'verdict' ? 'Copied Verdict' : 'Copy Verdict'}</span>
+              {copiedText === 'verdict' ? <Check className="w-3.5 h-3.5 text-[#56b29e]" /> : <Copy className="w-3.5 h-3.5 text-[#1d1b18]" />}
+              <span>{copiedText === 'verdict' ? 'COPIED VERDICT' : 'COPY VERDICT'}</span>
             </button>
           )}
 
           <button
             onClick={() => copyToClipboard(`[GhostNet Case ${caseData.caseId}]\nClaim: ${caseData.originalClaim}\nVerdict: ${caseData.verdict?.verdict || 'In Trial'}\nSummary: ${caseData.verdict?.summary || ''}`, 'docket')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#181E29] hover:bg-[#222B3B] border border-[#2C384B] text-xs font-mono-code text-gray-200 transition-colors"
+            className="btn sm ghost font-brand font-black border-2 border-[#1d1b18]"
           >
-            {copiedText === 'docket' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-gray-400" />}
-            <span>{copiedText === 'docket' ? 'Copied Summary' : 'Copy Case Docket'}</span>
+            {copiedText === 'docket' ? <Check className="w-3.5 h-3.5 text-[#56b29e]" /> : <Copy className="w-3.5 h-3.5 text-[#1d1b18]" />}
+            <span>{copiedText === 'docket' ? 'COPIED DOCKET' : 'COPY DOCKET'}</span>
           </button>
         </div>
 
@@ -542,19 +535,19 @@ export const Courtroom: React.FC = () => {
             <button
               onClick={handleRetry}
               disabled={isRetrying}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-rose-500 hover:bg-rose-400 text-white font-bold text-xs font-mono-code transition-all"
+              className="btn sm orange font-brand font-black"
             >
               <RotateCw className={`w-3.5 h-3.5 ${isRetrying ? 'animate-spin' : ''}`} />
-              <span>Retry Trial</span>
+              <span>RETRY TRIAL</span>
             </button>
           )}
 
           <Link
             to="/investigate"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold text-xs font-mono-code transition-all shadow-md shadow-amber-500/10"
+            className="btn sm arrow font-brand font-black"
           >
-            <Plus className="w-3.5 h-3.5" />
-            <span>New Investigation</span>
+            <Plus className="w-3.5 h-3.5 text-[#1d1b18]" />
+            <span>NEW INVESTIGATION</span>
           </Link>
         </div>
       </div>

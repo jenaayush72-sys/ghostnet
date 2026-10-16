@@ -58,228 +58,223 @@ export const Dashboard: React.FC = () => {
   const inProgressCases = cases.filter(c => c.status === 'in_progress' || c.status === 'queued').length;
   const totalEvidenceCount = cases.reduce((acc, c) => acc + (c.evidenceReferences?.length || 0), 0);
 
-  // Verdict breakdown
-  const trueCount = cases.filter(c => c.verdict?.verdict === 'TRUE').length;
-  const falseCount = cases.filter(c => c.verdict?.verdict === 'FALSE').length;
-  const partiallyTrueCount = cases.filter(c => c.verdict?.verdict === 'PARTIALLY TRUE').length;
-  const misleadingCount = cases.filter(c => c.verdict?.verdict === 'MISLEADING').length;
-  const insufficientCount = cases.filter(c => c.verdict?.verdict === 'INSUFFICIENT EVIDENCE').length;
-
   const getVerdictBadge = (verdict?: string | null) => {
     switch (verdict) {
       case 'TRUE':
-        return <span className="px-2 py-0.5 rounded text-[11px] font-mono-code bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">TRUE</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#56b29e] text-[#1d1b18] border border-[#1d1b18]">TRUE</span>;
       case 'FALSE':
-        return <span className="px-2 py-0.5 rounded text-[11px] font-mono-code bg-rose-500/15 text-rose-400 border border-rose-500/25">FALSE</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#e5452f] text-white border border-[#1d1b18]">FALSE</span>;
       case 'PARTIALLY TRUE':
-        return <span className="px-2 py-0.5 rounded text-[11px] font-mono-code bg-amber-500/15 text-amber-400 border border-amber-500/25">PARTIALLY TRUE</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#f8c33c] text-[#1d1b18] border border-[#1d1b18]">PARTIALLY TRUE</span>;
       case 'MISLEADING':
-        return <span className="px-2 py-0.5 rounded text-[11px] font-mono-code bg-orange-500/15 text-orange-400 border border-orange-500/25">MISLEADING</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#f47a22] text-[#fff] border border-[#1d1b18]">MISLEADING</span>;
       case 'INSUFFICIENT EVIDENCE':
-        return <span className="px-2 py-0.5 rounded text-[11px] font-mono-code bg-slate-500/15 text-slate-300 border border-slate-500/25">INSUFFICIENT EVIDENCE</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#7a8fd8] text-[#1d1b18] border border-[#1d1b18]">INSUFFICIENT</span>;
       default:
-        return <span className="px-2 py-0.5 rounded text-[11px] font-mono-code bg-amber-500/10 text-amber-300 border border-amber-500/20">IN TRIAL</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#f1e4cf] text-[#1d1b18] border border-[#1d1b18]">IN TRIAL</span>;
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Welcome & Quick Action Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-[#12161E] border border-[#232A36]">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* 1. Header Banner Bento */}
+      <div className="p-6 sm:p-8 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] flex flex-col md:flex-row md:items-center justify-between gap-6 dots">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono-code text-amber-400 uppercase tracking-wider mb-1">
-            <Scale className="w-4 h-4" />
-            <span>Courtroom Chamber Active</span>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-100 tracking-tight">
-            AI Verification Docket
+          <div className="tag-sticker yellow mb-2">COURT CHAMBERS ACTIVE</div>
+          <h1 className="font-brand font-black text-4xl sm:text-6xl text-[#1d1b18] uppercase leading-none">
+            AI VERIFICATION DOCKET.
           </h1>
-          <p className="text-xs text-gray-400 mt-1">
-            Select a past trial to review evidence records, or empanel a new case for immediate adversarial cross-examination.
+          <p className="text-sm font-semibold text-[#6e665b] mt-2 max-w-xl">
+            Review live and archived trials, inspect primary citations, or empanel new claims for adversarial cross-examination.
           </p>
         </div>
 
         <Link
           to="/investigate"
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold text-sm transition-all shadow-md shadow-amber-500/10 self-start md:self-auto"
+          className="btn arrow font-brand font-black"
         >
-          <Plus className="w-4 h-4" />
-          <span>New Investigation</span>
+          <ShieldAlert className="w-4 h-4 text-[#1d1b18]" />
+          <span>EMPANEL TRIAL</span>
         </Link>
       </div>
 
-      {/* Quick Empanelling Input */}
-      <div className="p-6 rounded-2xl bg-[#10141B] border border-[#232A36] space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-200 font-mono-code flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            Empanel Claim on Trial
-          </h2>
-          <span className="text-xs text-gray-400 font-mono-code">Fast-Track Filing</span>
+      {/* 2. Stat Chips Row (Signature 4 colors: Orange, Blue, Pink, Yellow) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="p-4 rounded-[18px] bg-[#f47a22] border-[2.5px] border-[#1d1b18] shadow-[2px_2px_0px_#1d1b18] flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase text-[#1d1b18] opacity-80 block">Total Dockets</span>
+            <span className="font-brand font-black text-4xl text-[#1d1b18] leading-tight">{totalCases}</span>
+          </div>
+          <div className="w-10 h-10 rounded-full bg-[#1d1b18] text-[#f47a22] flex items-center justify-center font-brand font-black">
+            Σ
+          </div>
         </div>
 
-        <form onSubmit={handleQuickSubmit} className="space-y-3">
-          <div className="relative">
-            <input
-              type="text"
-              value={quickClaim}
-              onChange={(e) => setQuickClaim(e.target.value)}
-              placeholder="Enter an AI answer, factual claim, or technical assertion (e.g. 'Node.js is purely single-threaded without threads')..."
-              className="w-full px-4 py-3 rounded-xl bg-[#090B0E] border border-[#262E3E] focus:border-amber-500/60 focus:ring-1 focus:ring-amber-500 text-sm text-gray-100 placeholder-gray-500 transition-all font-sans"
-            />
+        <div className="p-4 rounded-[18px] bg-[#56b29e] border-[2.5px] border-[#1d1b18] shadow-[2px_2px_0px_#1d1b18] flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase text-[#1d1b18] opacity-80 block">Verdicts Concluded</span>
+            <span className="font-brand font-black text-4xl text-[#1d1b18] leading-tight">{completedCases}</span>
+          </div>
+          <div className="w-10 h-10 rounded-full bg-[#1d1b18] text-[#56b29e] flex items-center justify-center">
+            <CheckCircle2 className="w-5 h-5" />
+          </div>
+        </div>
+
+        <div className="p-4 rounded-[18px] bg-[#7a8fd8] border-[2.5px] border-[#1d1b18] shadow-[2px_2px_0px_#1d1b18] flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase text-[#1d1b18] opacity-80 block">Active Chamber Trials</span>
+            <span className="font-brand font-black text-4xl text-[#1d1b18] leading-tight">{inProgressCases}</span>
+          </div>
+          <div className="w-10 h-10 rounded-full bg-[#1d1b18] text-[#7a8fd8] flex items-center justify-center">
+            <Scale className="w-5 h-5" />
+          </div>
+        </div>
+
+        <div className="p-4 rounded-[18px] bg-[#f8c33c] border-[2.5px] border-[#1d1b18] shadow-[2px_2px_0px_#1d1b18] flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase text-[#1d1b18] opacity-80 block">Indexed Citations</span>
+            <span className="font-brand font-black text-4xl text-[#1d1b18] leading-tight">{totalEvidenceCount}</span>
+          </div>
+          <div className="w-10 h-10 rounded-full bg-[#1d1b18] text-[#f8c33c] flex items-center justify-center">
+            <Search className="w-5 h-5" />
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Quick Empanel Card + Recent Cases Bento */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Quick Empanel Form (4 cols) */}
+        <div className="lg:col-span-5 p-6 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] space-y-4">
+          <div>
+            <span className="tag-sticker teal mb-2">QUICK CHAMBER TRIAL</span>
+            <h3 className="font-brand font-black text-2xl text-[#1d1b18] uppercase mt-2">
+              Empanel a Statement
+            </h3>
+            <p className="text-xs font-semibold text-[#6e665b] mt-1">
+              Test any generative answer or factual claim instantly.
+            </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400 font-mono-code">Category:</span>
-              {(['general', 'programming', 'news', 'decision'] as Category[]).map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setQuickCategory(cat)}
-                  className={`px-2.5 py-1 rounded text-xs font-mono-code capitalize transition-colors ${
-                    quickCategory === cat
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                      : 'bg-[#151921] text-gray-400 border border-[#232A36] hover:text-gray-200'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+          <form onSubmit={handleQuickSubmit} className="space-y-3">
+            <div>
+              <label className="block font-brand font-black text-xs uppercase text-[#1d1b18] mb-1">
+                Category
+              </label>
+              <select
+                value={quickCategory}
+                onChange={(e) => setQuickCategory(e.target.value as Category)}
+                className="rift-input text-xs font-bold"
+              >
+                <option value="general">Factual / General Assertion</option>
+                <option value="programming">Code & Technical Framework</option>
+                <option value="news">News & Current Affairs</option>
+                <option value="decision">Complex Argument / Policy</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-brand font-black text-xs uppercase text-[#1d1b18] mb-1">
+                Claim / Assertion
+              </label>
+              <textarea
+                rows={4}
+                required
+                value={quickClaim}
+                onChange={(e) => setQuickClaim(e.target.value)}
+                placeholder="Paste statement to interrogate..."
+                className="rift-input text-xs font-medium"
+              />
             </div>
 
             <button
               type="submit"
-              disabled={quickClaim.trim().length < 5 || isSubmitting}
-              className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-gray-950 font-bold text-xs uppercase tracking-wider font-mono-code transition-all flex items-center gap-1.5"
+              disabled={isSubmitting || quickClaim.trim().length < 5}
+              className="btn w-full arrow font-brand font-black text-sm disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>Empanelling...</span>
+                  <Loader2 className="w-4 h-4 animate-spin text-[#1d1b18]" />
+                  <span>EMPANELLING...</span>
                 </>
               ) : (
-                <>
-                  <span>File Charges</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </>
+                <span>EMPANEL TRIAL NOW</span>
               )}
             </button>
-          </div>
-        </form>
-      </div>
-
-      {/* Real Statistics derived from database */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-[#12161E] border border-[#232A36]">
-          <span className="text-xs text-gray-400 font-mono-code">Total Cases</span>
-          <p className="text-2xl font-bold text-gray-100 font-mono-code mt-1">{totalCases}</p>
-        </div>
-        <div className="p-4 rounded-xl bg-[#12161E] border border-[#232A36]">
-          <span className="text-xs text-gray-400 font-mono-code">Trials Concluded</span>
-          <p className="text-2xl font-bold text-emerald-400 font-mono-code mt-1">{completedCases}</p>
-        </div>
-        <div className="p-4 rounded-xl bg-[#12161E] border border-[#232A36]">
-          <span className="text-xs text-gray-400 font-mono-code">In Active Trial</span>
-          <p className="text-2xl font-bold text-amber-400 font-mono-code mt-1">{inProgressCases}</p>
-        </div>
-        <div className="p-4 rounded-xl bg-[#12161E] border border-[#232A36]">
-          <span className="text-xs text-gray-400 font-mono-code">Evidence Referenced</span>
-          <p className="text-2xl font-bold text-sky-400 font-mono-code mt-1">{totalEvidenceCount}</p>
-        </div>
-      </div>
-
-      {/* Verdict Breakdown Strip */}
-      {completedCases > 0 && (
-        <div className="p-4 rounded-xl bg-[#10141B] border border-[#232A36] flex flex-wrap items-center justify-between gap-3 text-xs font-mono-code">
-          <span className="text-gray-400">Verdict Precedent Distribution:</span>
-          <div className="flex flex-wrap items-center gap-4">
-            <span className="text-emerald-400">TRUE: {trueCount}</span>
-            <span className="text-rose-400">FALSE: {falseCount}</span>
-            <span className="text-amber-400">PARTIAL: {partiallyTrueCount}</span>
-            <span className="text-orange-400">MISLEADING: {misleadingCount}</span>
-            <span className="text-slate-400">INSUFFICIENT: {insufficientCount}</span>
-          </div>
-        </div>
-      )}
-
-      {/* Recent Investigations List */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-100 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-gray-400" />
-            Recent Court Dockets
-          </h2>
-          <Link
-            to="/history"
-            className="text-xs font-mono-code text-amber-400 hover:text-amber-300 flex items-center gap-1"
-          >
-            <span>View All Cases</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
+          </form>
         </div>
 
-        {loading ? (
-          <div className="py-16 text-center text-gray-400 flex flex-col items-center gap-2">
-            <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
-            <span className="text-xs font-mono-code">Loading case archives from MongoDB...</span>
-          </div>
-        ) : error ? (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs">
-            {error}
-          </div>
-        ) : cases.length === 0 ? (
-          <div className="py-16 text-center rounded-2xl border border-dashed border-[#232A36] p-8 text-gray-400">
-            <Gavel className="w-10 h-10 mx-auto text-gray-600 mb-3" />
-            <h3 className="text-base font-semibold text-gray-200">The Courtroom is currently adjourned</h3>
-            <p className="text-xs text-gray-500 max-w-md mx-auto mt-1 mb-4">
-              No investigation cases have been empanelled yet. Enter a claim above to initiate the first trial!
-            </p>
-            <Link
-              to="/investigate"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold text-xs font-mono-code"
-            >
-              <Plus className="w-4 h-4" /> Empanel First Case
-            </Link>
-          </div>
-        ) : (
-          <div className="rounded-xl border border-[#232A36] overflow-hidden bg-[#10141B]">
-            <div className="divide-y divide-[#1D232F]">
-              {cases.map((c) => (
-                <Link
-                  key={c.caseId}
-                  to={`/courtroom/${c.caseId}`}
-                  className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#151A24] transition-colors block"
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono-code text-xs font-bold text-amber-400">
-                        {c.caseId}
-                      </span>
-                      <span className="text-[10px] uppercase font-mono-code px-2 py-0.5 rounded bg-[#1A202C] text-gray-300 border border-[#2D3748]">
-                        {c.category}
-                      </span>
-                      <span className="text-[11px] text-gray-500">
-                        {new Date(c.createdAt).toLocaleDateString()}
-                      </span>
+        {/* Recent Cases List (7 cols) */}
+        <div className="lg:col-span-7 p-6 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] space-y-4 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#1d1b18]">
+              <div>
+                <h3 className="font-brand font-black text-2xl text-[#1d1b18] uppercase flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-[#f47a22]" />
+                  Recent Court Dockets
+                </h3>
+                <p className="text-xs font-semibold text-[#6e665b]">
+                  Showing latest investigations in local memory/database.
+                </p>
+              </div>
+              <Link
+                to="/history"
+                className="text-xs font-brand font-black uppercase text-[#1d1b18] hover:underline"
+              >
+                VIEW ALL →
+              </Link>
+            </div>
+
+            <div className="mt-4 space-y-2.5">
+              {loading ? (
+                <div className="py-12 text-center text-[#6e665b] font-brand font-black uppercase">
+                  <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#f47a22] mb-2" />
+                  Loading case records...
+                </div>
+              ) : cases.length === 0 ? (
+                <div className="py-12 text-center text-[#6e665b]">
+                  <p className="font-brand font-black text-lg uppercase">No cases empanelled yet</p>
+                  <p className="text-xs font-semibold mt-1">Submit your first claim using the form on the left!</p>
+                </div>
+              ) : (
+                cases.slice(0, 5).map((c) => (
+                  <Link
+                    key={c.caseId}
+                    to={`/courtroom/${c.caseId}`}
+                    className="p-3.5 rounded-[16px] bg-[#f1e4cf] hover:bg-[#ebdcc4] border-2 border-[#1d1b18] shadow-[2px_2px_0px_#1d1b18] flex items-center justify-between gap-3 transition-transform hover:translate-x-1 block"
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-brand font-black text-xs text-[#1d1b18] bg-[#f8c33c] px-2 py-0.5 rounded border border-[#1d1b18]">
+                          {c.caseId}
+                        </span>
+                        <span className="text-[10px] font-brand font-bold uppercase text-[#6e665b]">
+                          {c.category}
+                        </span>
+                        <span className="text-[10px] font-bold text-[#6e665b]">
+                          {new Date(c.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <h4 className="font-brand font-bold text-sm text-[#1d1b18] truncate">
+                        "{c.originalClaim}"
+                      </h4>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-100 line-clamp-1">
-                      {c.originalClaim}
-                    </h3>
-                  </div>
 
-                  <div className="flex items-center gap-3 shrink-0">
-                    {getVerdictBadge(c.verdict?.verdict)}
-                    <span className="text-xs text-gray-500 hidden md:block font-mono-code">
-                      Stage: {c.currentStage}
-                    </span>
-                    <ArrowRight className="w-4 h-4 text-gray-500" />
-                  </div>
-                </Link>
-              ))}
+                    <div className="shrink-0">
+                      {getVerdictBadge(c.verdict?.verdict)}
+                    </div>
+                  </Link>
+                ))
+              )}
             </div>
           </div>
-        )}
+
+          <div className="pt-3 border-t-2 border-[#1d1b18] flex items-center justify-between text-xs font-bold text-[#6e665b]">
+            <span>Empanelling powered by 6 autonomous agents</span>
+            <Link to="/history" className="text-[#1d1b18] hover:underline font-brand font-black uppercase">
+              Full Archive →
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
