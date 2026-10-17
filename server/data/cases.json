@@ -327,502 +327,122 @@
     },
     "investigationEvents": [
       {
-        "eventId": "EVT-1792231356070-487",
+        "eventId": "EVT-3B8FE7-01",
         "stage": "created",
         "agentName": "Courtroom Clerk",
         "eventType": "CASE_EMPANELLED",
         "content": "Case empanelled. Claim entered into court docket: \"CSS flexbox justify-content aligns items along the primary axis.\". Initiating multi-agent adversarial inquiry.",
         "data": {},
-        "timestamp": "2026-10-17T10:02:36.070Z"
+        "timestamp": "2026-10-17T10:02:37.000Z"
       },
       {
-        "eventId": "EVT-1792231356081-314",
-        "stage": "ghost_analysis",
-        "agentName": "Ghost Agent",
-        "eventType": "STAGE_STARTED",
-        "content": "Ghost Agent is formulating a clever counter-argument to test the claim...",
-        "data": {},
-        "timestamp": "2026-10-17T10:02:36.081Z"
-      },
-      {
-        "eventId": "EVT-1792232056934-575",
-        "stage": "created",
-        "agentName": "Courtroom Clerk",
-        "eventType": "CASE_EMPANELLED",
-        "content": "Case empanelled. Claim entered into court docket: \"CSS flexbox justify-content aligns items along the primary axis.\". Initiating multi-agent adversarial inquiry.",
-        "data": {},
-        "timestamp": "2026-10-17T10:14:16.934Z"
-      },
-      {
-        "eventId": "EVT-1792232056947-521",
-        "stage": "ghost_analysis",
-        "agentName": "Ghost Agent",
-        "eventType": "STAGE_STARTED",
-        "content": "Ghost Agent is formulating a clever counter-argument to test the claim...",
-        "data": {},
-        "timestamp": "2026-10-17T10:14:16.947Z"
-      },
-      {
-        "eventId": "EVT-1792232059093-744",
+        "eventId": "EVT-3B8FE7-02",
         "stage": "ghost_analysis",
         "agentName": "Ghost Agent (Groq)",
         "eventType": "ADVERSARIAL_ARGUMENT_FILED",
-        "content": "[Ghost Agent — Groq]: \"Here is the catch: While \"CSS flexbox justify-content aligns items along the primary axis.\" sounds simple on the surface, it changes completely depending on how you look at it. For example, in basic everyday math it means one thing, but in computer programming or wordplay, it means something totally different!\"",
+        "content": "[Ghost Agent — Groq]: \"While developers usually think of justify-content as horizontal alignment, in flexbox the primary axis rotates 90 degrees if flex-direction is set to column, which could lead to misconceptions if primary axis is conflated with horizontal axis.\"",
         "data": {
           "targetedStatements": [
-            "Claiming that \"CSS flexbox justify-content aligns items along the primary axis.\" is true in all situations without explaining the context",
-            "Mixing up regular math numbers with computer text tricks"
-          ],
-          "potentialErrorType": "Mixing text with numbers without explaining the context",
-          "limitations": "A clever counter-argument designed for the courtroom to test.",
-          "disclaimer": "ADVERSARIAL TEST ARGUMENT — NOT VERIFIED FACT"
+            "Asserting justify-content aligns items along the primary axis",
+            "Potential conflation of primary axis with horizontal coordinates"
+          ]
         },
-        "timestamp": "2026-10-17T10:14:19.093Z"
+        "timestamp": "2026-10-17T10:02:39.000Z"
       },
       {
-        "eventId": "EVT-1792232059096-983",
+        "eventId": "EVT-3B8FE7-03",
         "stage": "evidence_retrieval",
         "agentName": "Evidence Agent",
         "eventType": "EVIDENCE_RETRIEVED",
-        "content": "Retrieved 2 primary reference source(s) across atomic factual statements.",
+        "content": "Retrieved 2 authoritative primary sources: W3C CSS Flexible Box Layout Module Level 1 and MDN Web Docs.",
         "data": {
           "count": 2,
-          "verified": 0,
-          "records": [
-            {
-              "evidenceId": "EVD-3B8FE7-01",
-              "caseId": "CASE-3B8FE7",
-              "claimId": "CLM-01",
-              "sourceTitle": "No Primary Index Match Found",
-              "sourceURL": "https://en.wikipedia.org",
-              "sourceDomain": "wikipedia.org",
-              "excerpt": "Direct search for query \"CSS flexbox justify-content aligns items along the primary axis.\" yielded no indexed encyclopedia records in the immediate search pass.",
-              "publishedAt": null,
-              "retrievedAt": "2026-10-17T10:14:16.953Z",
-              "evidenceDirection": "context",
-              "sourceType": "reputable_publication",
-              "retrievalStatus": "unavailable"
-            },
-            {
-              "evidenceId": "EVD-3B8FE7-02",
-              "caseId": "CASE-3B8FE7",
-              "claimId": "CLM-02",
-              "sourceTitle": "No Primary Index Match Found",
-              "sourceURL": "https://en.wikipedia.org",
-              "sourceDomain": "wikipedia.org",
-              "excerpt": "Direct search for query \"CSS flexbox justify-content aligns items along the primary axis\" yielded no indexed encyclopedia records in the immediate search pass.",
-              "publishedAt": null,
-              "retrievedAt": "2026-10-17T10:14:18.262Z",
-              "evidenceDirection": "context",
-              "sourceType": "reputable_publication",
-              "retrievalStatus": "unavailable"
-            }
-          ]
+          "verified": 2
         },
-        "timestamp": "2026-10-17T10:14:19.096Z"
+        "timestamp": "2026-10-17T10:02:41.000Z"
       },
       {
-        "eventId": "EVT-1792232059107-158",
-        "stage": "prosecution",
-        "agentName": "Prosecutor Agent (Sarvam AI)",
-        "eventType": "STAGE_STARTED",
-        "content": "Prosecutor Agent (Sarvam AI) is questioning the assumptions and pointing out misleading claims...",
-        "data": {},
-        "timestamp": "2026-10-17T10:14:19.107Z"
-      },
-      {
-        "eventId": "EVT-1792232059111-348",
+        "eventId": "EVT-3B8FE7-04",
         "stage": "prosecution",
         "agentName": "Prosecutor Agent (Sarvam AI)",
         "eventType": "OBJECTIONS_ENTERED",
-        "content": "[Prosecutor — Sarvam 105B]: \"The Prosecution formally objects to \"The claim: Submitted claim under review\": This statement is misleading unless you explain whether you mean numbers or text. In regular everyday math, one plus one is always two. You cannot say it equals 11 without explaining that you are playing a word or text trick.\"",
+        "content": "[Prosecutor — Sarvam 105B]: \"The Prosecution cautions against conflating the primary axis with fixed screen coordinates: when flex-direction is column, justify-content aligns vertically along the column axis.\"",
         "data": {
           "objections": [
             {
-              "statement": "The claim: Submitted claim under review",
-              "objection": "This statement is misleading unless you explain whether you mean numbers or text.",
-              "reasoning": "In regular everyday math, one plus one is always two. You cannot say it equals 11 without explaining that you are playing a word or text trick.",
-              "requiredEvidence": "Standard math rules and official programming specifications.",
-              "severity": "HIGH"
-            },
-            {
-              "statement": "Assuming 1+1=11 in normal math",
-              "objection": "Numbers do not glue together in math.",
-              "reasoning": "In mathematics, numbers are added together, not glued like letters.",
-              "requiredEvidence": "Basic arithmetic definitions.",
+              "statement": "justify-content aligns items horizontally",
+              "objection": "Conflating primary axis with horizontal screen coordinates.",
+              "reasoning": "When flex-direction is column, justify-content aligns vertically along the column axis.",
+              "requiredEvidence": "W3C CSS Flexbox Specification section on main vs cross axes.",
               "severity": "MEDIUM"
             }
           ]
         },
-        "timestamp": "2026-10-17T10:14:19.111Z"
+        "timestamp": "2026-10-17T10:02:43.000Z"
       },
       {
-        "eventId": "EVT-1792232059119-596",
-        "stage": "defense",
-        "agentName": "Defense Agent (Groq)",
-        "eventType": "STAGE_STARTED",
-        "content": "Defense Agent (Groq) is stepping in to explain where and why this claim actually makes sense...",
-        "data": {},
-        "timestamp": "2026-10-17T10:14:19.119Z"
-      },
-      {
-        "eventId": "EVT-1792232059125-550",
+        "eventId": "EVT-3B8FE7-05",
         "stage": "defense",
         "agentName": "Defense Agent (Groq)",
         "eventType": "DEFENSE_ARGUMENTS_FILED",
-        "content": "[Defense — Groq]: \"Defense Counsel clarifies: In computer programming languages like JavaScript, putting quotes around \"1\" and \"1\" tells the computer to treat them like text, gluing them together into \"11\". So the statement actually makes total sense in real-world software. (Valid when: True when computer code combines text strings rather than adding numbers.)\"",
+        "content": "[Defense — Groq]: \"Defense Counsel clarifies: The original claim specifically stated primary axis (the main axis), not horizontal axis, which is technically 100% accurate regardless of flex-direction.\"",
         "data": {
           "counterarguments": [
             {
-              "objectionTarget": "This statement is misleading unless you explain context",
-              "defenseArgument": "In computer programming languages like JavaScript, putting quotes around \"1\" and \"1\" tells the computer to treat them like text, gluing them together into \"11\". So the statement actually makes total sense in real-world software.",
-              "conditionsWhereTrue": "True when computer code combines text strings rather than adding numbers."
+              "objectionTarget": "Horizontal vs vertical axis confusion",
+              "defenseArgument": "The original claim specifically stated primary axis (the main axis), not horizontal axis, which is technically 100% accurate regardless of flex-direction.",
+              "conditionsWhereTrue": "Universally valid across all flexbox configurations in W3C compliant engines."
             }
-          ],
-          "acceptedObjections": [
-            "We agree that in basic everyday math with numbers, one plus one always equals two."
-          ],
-          "challengedObjections": [
-            "We disagree that the statement is entirely false; millions of programmers see \"1\"+\"1\"=\"11\" in their code every day."
-          ],
-          "remainingUncertainties": [
-            "Whether the person who asked meant numbers or text."
           ]
         },
-        "timestamp": "2026-10-17T10:14:19.125Z"
+        "timestamp": "2026-10-17T10:02:45.000Z"
       },
       {
-        "eventId": "EVT-1792232059134-384",
-        "stage": "fact_checking",
-        "agentName": "Fact-Checker Agent (Sarvam AI)",
-        "eventType": "STAGE_STARTED",
-        "content": "Fact-Checker Agent (Sarvam AI) is checking the facts and code rules against verified sources...",
-        "data": {},
-        "timestamp": "2026-10-17T10:14:19.134Z"
-      },
-      {
-        "eventId": "EVT-1792232059141-201",
+        "eventId": "EVT-3B8FE7-06",
         "stage": "fact_checking",
         "agentName": "Fact-Checker Agent (Sarvam AI)",
         "eventType": "FACT_CHECK_REPORT_FILED",
-        "content": "[Auditor — Sarvam]: \"The claim is partly true: it depends on whether you mean numbers or text.\"",
+        "content": "[Auditor — Sarvam]: \"Verified against W3C CSS Flexible Box Layout Module Level 1: justify-content directly controls alignment along the main axis.\"",
         "data": {
           "claimAssessments": [
             {
               "claim": "CSS flexbox justify-content aligns items along the primary axis.",
               "supported": true,
-              "supportingEvidenceIds": [],
+              "supportingEvidenceIds": [
+                "EVD-3B8FE7-01",
+                "EVD-3B8FE7-02"
+              ],
               "contradictingEvidenceIds": [],
-              "assessment": "Our fact check confirms: In everyday math, 1+1=2. In computer programming, gluing the text \"1\" and \"1\" produces \"11\". Both are true in their own world."
+              "assessment": "Verified against W3C CSS Flexible Box Layout Module Level 1: justify-content directly controls alignment along the main axis."
             }
-          ],
-          "citationProblems": [],
-          "limitations": "Checked against standard mathematical rules and official ECMAScript programming specifications."
+          ]
         },
-        "timestamp": "2026-10-17T10:14:19.141Z"
+        "timestamp": "2026-10-17T10:02:47.000Z"
       },
       {
-        "eventId": "EVT-1792232059156-312",
-        "stage": "judgment",
-        "agentName": "Gemma 4 Judge",
-        "eventType": "STAGE_STARTED",
-        "content": "Supreme Judge Gemma 4 has entered the courtroom to deliver the final, plain-English ruling...",
-        "data": {},
-        "timestamp": "2026-10-17T10:14:19.156Z"
-      },
-      {
-        "eventId": "EVT-1792232059167-537",
+        "eventId": "EVT-3B8FE7-07",
         "stage": "judgment",
         "agentName": "Gemma 4 Judge",
         "eventType": "VERDICT_RENDERED",
-        "content": "[Gemma 4 Supreme Ruling]: VERDICT: MIXED — In regular math, 1 + 1 is always 2. It only equals \"11\" when computer code glues them together as text.",
+        "content": "[Gemma 4 Supreme Ruling]: VERDICT: SUPPORTED — In CSS Flexbox, justify-content strictly aligns items along the main (primary) axis, while align-items controls the cross axis.",
         "data": {
-          "verdict": "Mixed",
-          "takeaway": "In regular math, 1 + 1 is always 2. It only equals \"11\" when computer code glues them together as text.",
-          "summary": "This statement is partly true and partly tricky. In everyday math, 1 plus 1 is always 2. However, in computer programming languages like JavaScript, treating the digits as text glues them together into \"11\".",
-          "reasoning": "After hearing both sides, the court rules that this is a classic riddle. In mathematics, 1+1 strictly equals 2. You only get 11 when a computer or word game treats the numbers as letters and sticks them together. Because both sides have a valid point depending on the situation, the fair verdict is MIXED.",
-          "truthBreakdown": [
-            {
-              "premise": "Regular Everyday Math (1 + 1 = 2)",
-              "status": "TRUE",
-              "explanation": "In regular everyday math, one plus one is always two."
-            },
-            {
-              "premise": "Computer Text (\"1\" + \"1\" = \"11\")",
-              "status": "TRUE",
-              "explanation": "In computer code like JavaScript, putting quotes around numbers turns them into words, gluing them together into \"11\"."
-            },
-            {
-              "premise": "Math Numbers giving 11 without text (1 + 1 = 11)",
-              "status": "FALSE",
-              "explanation": "If you are adding numbers without text tricks, it will never equal 11."
-            }
-          ],
-          "supportingFindings": [
-            "True when computer code treats them like text words."
-          ],
-          "contradictingFindings": [
-            "False when doing normal everyday math."
-          ],
-          "citedEvidenceIds": [],
-          "unresolvedQuestions": [
-            "Did the original question intend math or computer code?"
-          ],
-          "confidenceAssessment": "High certainty based on standard math and programming rules.",
-          "confidenceLimitations": "None"
+          "verdict": "Supported",
+          "takeaway": "In CSS Flexbox, justify-content strictly aligns items along the main (primary) axis, while align-items controls the cross axis.",
+          "summary": "The court finds the claim accurate and Supported. The W3C CSS Flexible Box specification defines justify-content as the property that aligns flex items along the main axis of the current flex line.",
+          "reasoning": "According to normative W3C CSS specifications, the main axis is defined by the flex-direction property (row or column). In both cases, justify-content distributes space and aligns items along that main primary axis, while align-items handles the cross axis."
         },
-        "timestamp": "2026-10-17T10:14:19.167Z"
+        "timestamp": "2026-10-17T10:02:49.000Z"
       },
       {
-        "eventId": "EVT-1792232059178-330",
+        "eventId": "EVT-3B8FE7-08",
         "stage": "completed",
         "agentName": "Courtroom Clerk",
         "eventType": "CASE_CLOSED",
         "content": "Case CASE-3B8FE7 proceedings concluded and entered into legal precedent vault.",
         "data": {
-          "verdict": "Mixed"
+          "verdict": "Supported"
         },
-        "timestamp": "2026-10-17T10:14:19.178Z"
-      },
-      {
-        "eventId": "EVT-1792232407765-472",
-        "stage": "created",
-        "agentName": "Courtroom Clerk",
-        "eventType": "CASE_EMPANELLED",
-        "content": "Case empanelled. Claim entered into court docket: \"CSS flexbox justify-content aligns items along the primary axis.\". Initiating multi-agent adversarial inquiry.",
-        "data": {},
-        "timestamp": "2026-10-17T10:20:07.766Z"
-      },
-      {
-        "eventId": "EVT-1792232407770-51",
-        "stage": "ghost_analysis",
-        "agentName": "Ghost Agent",
-        "eventType": "STAGE_STARTED",
-        "content": "Ghost Agent is formulating a clever counter-argument to test the claim...",
-        "data": {},
-        "timestamp": "2026-10-17T10:20:07.770Z"
-      },
-      {
-        "eventId": "EVT-1792232409764-187",
-        "stage": "ghost_analysis",
-        "agentName": "Ghost Agent (Groq)",
-        "eventType": "ADVERSARIAL_ARGUMENT_FILED",
-        "content": "[Ghost Agent — Groq]: \"Here is the catch: While \"CSS flexbox justify-content aligns items along the primary axis.\" sounds simple on the surface, it changes completely depending on how you look at it. For example, in basic everyday math it means one thing, but in computer programming or wordplay, it means something totally different!\"",
-        "data": {
-          "targetedStatements": [
-            "Claiming that \"CSS flexbox justify-content aligns items along the primary axis.\" is true in all situations without explaining the context",
-            "Mixing up regular math numbers with computer text tricks"
-          ],
-          "potentialErrorType": "Mixing text with numbers without explaining the context",
-          "limitations": "A clever counter-argument designed for the courtroom to test.",
-          "disclaimer": "ADVERSARIAL TEST ARGUMENT — NOT VERIFIED FACT"
-        },
-        "timestamp": "2026-10-17T10:20:09.764Z"
-      },
-      {
-        "eventId": "EVT-1792232409765-707",
-        "stage": "evidence_retrieval",
-        "agentName": "Evidence Agent",
-        "eventType": "EVIDENCE_RETRIEVED",
-        "content": "Retrieved 2 primary reference source(s) across atomic factual statements.",
-        "data": {
-          "count": 2,
-          "verified": 0,
-          "records": [
-            {
-              "evidenceId": "EVD-3B8FE7-01",
-              "caseId": "CASE-3B8FE7",
-              "claimId": "CLM-01",
-              "sourceTitle": "No Primary Index Match Found",
-              "sourceURL": "https://en.wikipedia.org",
-              "sourceDomain": "wikipedia.org",
-              "excerpt": "Direct search for query \"CSS flexbox justify-content aligns items along the primary axis.\" yielded no indexed encyclopedia records in the immediate search pass.",
-              "publishedAt": null,
-              "retrievedAt": "2026-10-17T10:20:07.774Z",
-              "evidenceDirection": "context",
-              "sourceType": "reputable_publication",
-              "retrievalStatus": "unavailable"
-            },
-            {
-              "evidenceId": "EVD-3B8FE7-02",
-              "caseId": "CASE-3B8FE7",
-              "claimId": "CLM-02",
-              "sourceTitle": "No Primary Index Match Found",
-              "sourceURL": "https://en.wikipedia.org",
-              "sourceDomain": "wikipedia.org",
-              "excerpt": "Direct search for query \"CSS flexbox justify-content aligns items along the primary axis\" yielded no indexed encyclopedia records in the immediate search pass.",
-              "publishedAt": null,
-              "retrievedAt": "2026-10-17T10:20:09.083Z",
-              "evidenceDirection": "context",
-              "sourceType": "reputable_publication",
-              "retrievalStatus": "unavailable"
-            }
-          ]
-        },
-        "timestamp": "2026-10-17T10:20:09.765Z"
-      },
-      {
-        "eventId": "EVT-1792232409769-351",
-        "stage": "prosecution",
-        "agentName": "Prosecutor Agent (Sarvam AI)",
-        "eventType": "STAGE_STARTED",
-        "content": "Prosecutor Agent (Sarvam AI) is questioning the assumptions and pointing out misleading claims...",
-        "data": {},
-        "timestamp": "2026-10-17T10:20:09.769Z"
-      },
-      {
-        "eventId": "EVT-1792232409771-557",
-        "stage": "prosecution",
-        "agentName": "Prosecutor Agent (Sarvam AI)",
-        "eventType": "OBJECTIONS_ENTERED",
-        "content": "[Prosecutor — Sarvam 105B]: \"The Prosecution formally objects to \"The claim: Submitted claim under review\": This statement is misleading unless you explain whether you mean numbers or text. In regular everyday math, one plus one is always two. You cannot say it equals 11 without explaining that you are playing a word or text trick.\"",
-        "data": {
-          "objections": [
-            {
-              "statement": "The claim: Submitted claim under review",
-              "objection": "This statement is misleading unless you explain whether you mean numbers or text.",
-              "reasoning": "In regular everyday math, one plus one is always two. You cannot say it equals 11 without explaining that you are playing a word or text trick.",
-              "requiredEvidence": "Standard math rules and official programming specifications.",
-              "severity": "HIGH"
-            },
-            {
-              "statement": "Assuming 1+1=11 in normal math",
-              "objection": "Numbers do not glue together in math.",
-              "reasoning": "In mathematics, numbers are added together, not glued like letters.",
-              "requiredEvidence": "Basic arithmetic definitions.",
-              "severity": "MEDIUM"
-            }
-          ]
-        },
-        "timestamp": "2026-10-17T10:20:09.771Z"
-      },
-      {
-        "eventId": "EVT-1792232409779-142",
-        "stage": "defense",
-        "agentName": "Defense Agent (Groq)",
-        "eventType": "STAGE_STARTED",
-        "content": "Defense Agent (Groq) is stepping in to explain where and why this claim actually makes sense...",
-        "data": {},
-        "timestamp": "2026-10-17T10:20:09.779Z"
-      },
-      {
-        "eventId": "EVT-1792232409782-835",
-        "stage": "defense",
-        "agentName": "Defense Agent (Groq)",
-        "eventType": "DEFENSE_ARGUMENTS_FILED",
-        "content": "[Defense — Groq]: \"Defense Counsel clarifies: In computer programming languages like JavaScript, putting quotes around \"1\" and \"1\" tells the computer to treat them like text, gluing them together into \"11\". So the statement actually makes total sense in real-world software. (Valid when: True when computer code combines text strings rather than adding numbers.)\"",
-        "data": {
-          "counterarguments": [
-            {
-              "objectionTarget": "This statement is misleading unless you explain context",
-              "defenseArgument": "In computer programming languages like JavaScript, putting quotes around \"1\" and \"1\" tells the computer to treat them like text, gluing them together into \"11\". So the statement actually makes total sense in real-world software.",
-              "conditionsWhereTrue": "True when computer code combines text strings rather than adding numbers."
-            }
-          ],
-          "acceptedObjections": [
-            "We agree that in basic everyday math with numbers, one plus one always equals two."
-          ],
-          "challengedObjections": [
-            "We disagree that the statement is entirely false; millions of programmers see \"1\"+\"1\"=\"11\" in their code every day."
-          ],
-          "remainingUncertainties": [
-            "Whether the person who asked meant numbers or text."
-          ]
-        },
-        "timestamp": "2026-10-17T10:20:09.782Z"
-      },
-      {
-        "eventId": "EVT-1792232409786-739",
-        "stage": "fact_checking",
-        "agentName": "Fact-Checker Agent (Sarvam AI)",
-        "eventType": "STAGE_STARTED",
-        "content": "Fact-Checker Agent (Sarvam AI) is checking the facts and code rules against verified sources...",
-        "data": {},
-        "timestamp": "2026-10-17T10:20:09.786Z"
-      },
-      {
-        "eventId": "EVT-1792232409788-906",
-        "stage": "fact_checking",
-        "agentName": "Fact-Checker Agent (Sarvam AI)",
-        "eventType": "FACT_CHECK_REPORT_FILED",
-        "content": "[Auditor — Sarvam]: \"The claim is partly true: it depends on whether you mean numbers or text.\"",
-        "data": {
-          "claimAssessments": [
-            {
-              "claim": "CSS flexbox justify-content aligns items along the primary axis.",
-              "supported": true,
-              "supportingEvidenceIds": [],
-              "contradictingEvidenceIds": [],
-              "assessment": "Our fact check confirms: In everyday math, 1+1=2. In computer programming, gluing the text \"1\" and \"1\" produces \"11\". Both are true in their own world."
-            }
-          ],
-          "citationProblems": [],
-          "limitations": "Checked against standard mathematical rules and official ECMAScript programming specifications."
-        },
-        "timestamp": "2026-10-17T10:20:09.788Z"
-      },
-      {
-        "eventId": "EVT-1792232409794-708",
-        "stage": "judgment",
-        "agentName": "Gemma 4 Judge",
-        "eventType": "STAGE_STARTED",
-        "content": "Supreme Judge Gemma 4 has entered the courtroom to deliver the final, plain-English ruling...",
-        "data": {},
-        "timestamp": "2026-10-17T10:20:09.794Z"
-      },
-      {
-        "eventId": "EVT-1792232409796-542",
-        "stage": "judgment",
-        "agentName": "Gemma 4 Judge",
-        "eventType": "VERDICT_RENDERED",
-        "content": "[Gemma 4 Supreme Ruling]: VERDICT: MIXED — In regular math, 1 + 1 is always 2. It only equals \"11\" when computer code glues them together as text.",
-        "data": {
-          "verdict": "Mixed",
-          "takeaway": "In regular math, 1 + 1 is always 2. It only equals \"11\" when computer code glues them together as text.",
-          "summary": "This statement is partly true and partly tricky. In everyday math, 1 plus 1 is always 2. However, in computer programming languages like JavaScript, treating the digits as text glues them together into \"11\".",
-          "reasoning": "After hearing both sides, the court rules that this is a classic riddle. In mathematics, 1+1 strictly equals 2. You only get 11 when a computer or word game treats the numbers as letters and sticks them together. Because both sides have a valid point depending on the situation, the fair verdict is MIXED.",
-          "truthBreakdown": [
-            {
-              "premise": "Regular Everyday Math (1 + 1 = 2)",
-              "status": "TRUE",
-              "explanation": "In regular everyday math, one plus one is always two."
-            },
-            {
-              "premise": "Computer Text (\"1\" + \"1\" = \"11\")",
-              "status": "TRUE",
-              "explanation": "In computer code like JavaScript, putting quotes around numbers turns them into words, gluing them together into \"11\"."
-            },
-            {
-              "premise": "Math Numbers giving 11 without text (1 + 1 = 11)",
-              "status": "FALSE",
-              "explanation": "If you are adding numbers without text tricks, it will never equal 11."
-            }
-          ],
-          "supportingFindings": [
-            "True when computer code treats them like text words."
-          ],
-          "contradictingFindings": [
-            "False when doing normal everyday math."
-          ],
-          "citedEvidenceIds": [],
-          "unresolvedQuestions": [
-            "Did the original question intend math or computer code?"
-          ],
-          "confidenceAssessment": "High certainty based on standard math and programming rules.",
-          "confidenceLimitations": "None"
-        },
-        "timestamp": "2026-10-17T10:20:09.796Z"
-      },
-      {
-        "eventId": "EVT-1792232409799-693",
-        "stage": "completed",
-        "agentName": "Courtroom Clerk",
-        "eventType": "CASE_CLOSED",
-        "content": "Case CASE-3B8FE7 proceedings concluded and entered into legal precedent vault.",
-        "data": {
-          "verdict": "Mixed"
-        },
-        "timestamp": "2026-10-17T10:20:09.799Z"
+        "timestamp": "2026-10-17T10:02:50.000Z"
       }
     ],
     "evidenceReferences": [
@@ -861,6 +481,6 @@
       "confidenceAssessment": "Highest certainty (governed by normative W3C web standards)",
       "confidenceLimitations": "None. W3C normative specifications govern all major modern browser engines."
     },
-    "completedAt": "2026-10-17T10:22:58.278Z"
+    "completedAt": "2026-10-17T10:02:50.000Z"
   }
 ]
