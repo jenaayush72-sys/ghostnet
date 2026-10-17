@@ -23,6 +23,70 @@ const STAGES_ORDER = [
   { key: 'completed', label: 'Concluded' }
 ];
 
+const getAgentMeta = (agentName: string = '', eventType: string = '') => {
+  const name = (agentName || '').toLowerCase();
+  const type = (eventType || '').toLowerCase();
+
+  if (name.includes('ghost')) {
+    return {
+      avatar: '👻',
+      modelTag: 'GROQ 120B',
+      modelBadgeBg: 'bg-[#56b29e] text-[#1d1b18]',
+      cardBorder: 'border-[#56b29e] bg-[#56b29e]/15',
+      isDialogue: true,
+      speakerRole: 'Ghost Adversary'
+    };
+  }
+  if (name.includes('prosecutor') || name.includes('prosecution') || type.includes('objection')) {
+    return {
+      avatar: '⚡',
+      modelTag: 'SARVAM 105B',
+      modelBadgeBg: 'bg-[#f47a22] text-white',
+      cardBorder: 'border-[#f47a22] bg-[#f47a22]/15',
+      isDialogue: true,
+      speakerRole: 'Prosecution'
+    };
+  }
+  if (name.includes('defense') || type.includes('defense')) {
+    return {
+      avatar: '🛡️',
+      modelTag: 'GROQ 120B',
+      modelBadgeBg: 'bg-[#7a8fd8] text-white',
+      cardBorder: 'border-[#7a8fd8] bg-[#7a8fd8]/15',
+      isDialogue: true,
+      speakerRole: 'Defense Counsel'
+    };
+  }
+  if (name.includes('fact-checker') || name.includes('fact checker') || name.includes('fact_checker') || type.includes('corroborat')) {
+    return {
+      avatar: '🔍',
+      modelTag: 'SARVAM 105B',
+      modelBadgeBg: 'bg-[#ebce38] text-[#1d1b18]',
+      cardBorder: 'border-[#ebce38] bg-[#ebce38]/20',
+      isDialogue: false,
+      speakerRole: 'Fact-Checker'
+    };
+  }
+  if (name.includes('judge') || type.includes('verdict')) {
+    return {
+      avatar: '⚖️',
+      modelTag: 'GEMMA 4 31B',
+      modelBadgeBg: 'bg-[#f8c33c] text-[#1d1b18]',
+      cardBorder: 'border-[#f8c33c] bg-[#f8c33c]/25',
+      isDialogue: true,
+      speakerRole: 'Supreme Judge'
+    };
+  }
+  return {
+    avatar: '📚',
+    modelTag: 'EVIDENCE HARVEST',
+    modelBadgeBg: 'bg-[#ebdcc4] text-[#1d1b18]',
+    cardBorder: 'border-[#1d1b18] bg-[#f1e4cf]',
+    isDialogue: false,
+    speakerRole: 'Evidence Vault'
+  };
+};
+
 export const Courtroom: React.FC = () => {
   const { caseId } = useParams<{ caseId: string }>();
   const navigate = useNavigate();
@@ -41,6 +105,12 @@ export const Courtroom: React.FC = () => {
   const [expandedEvents, setExpandedEvents] = useState<Record<string, boolean>>({});
 
   const timelineEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (caseData?.status === 'in_progress' && timelineEndRef.current) {
+      timelineEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [caseData?.investigationEvents?.length, caseData?.status]);
 
   useEffect(() => {
     if (!caseId) return;
@@ -322,6 +392,40 @@ export const Courtroom: React.FC = () => {
         </div>
       </div>
 
+      {/* LIVE MULTI-MODEL DELIBERATION BANNER */}
+      {caseData.status === 'in_progress' && (
+        <div className="p-4 sm:p-5 rounded-[20px] bg-[#1d1b18] text-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#f47a22] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in fade-in duration-300">
+          <div className="flex items-center gap-3">
+            <div className="relative flex items-center justify-center shrink-0">
+              <div className="w-4 h-4 rounded-full bg-[#e5452f] animate-ping absolute" />
+              <div className="w-3.5 h-3.5 rounded-full bg-[#e5452f] border border-[#1d1b18]" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-brand font-black text-sm uppercase tracking-wider text-[#f8c33c]">
+                  LIVE COURTROOM DELIBERATION
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-[#3a352e] text-[#f8eedc] text-[10px] font-mono-code uppercase">
+                  3 AI MODELS IN ADVERSARIAL DIALECTIC
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm font-bold text-white mt-0.5">
+                Current Hearing: <span className="text-[#f8c33c] uppercase underline">{caseData.currentStage.replace(/_/g, ' ')}</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap self-stretch sm:self-auto justify-end">
+            <span className="text-[11px] font-brand font-black text-[#ebdcc4] uppercase">MODELS COMPETING:</span>
+            <span className="px-2.5 py-1 rounded-full bg-[#56b29e] text-[#1d1b18] text-xs font-black uppercase border border-[#1d1b18]">Groq</span>
+            <span className="text-xs font-black text-[#ebdcc4]">vs</span>
+            <span className="px-2.5 py-1 rounded-full bg-[#f47a22] text-white text-xs font-black uppercase border border-[#1d1b18]">Sarvam</span>
+            <span className="text-xs font-black text-[#ebdcc4]">➔</span>
+            <span className="px-2.5 py-1 rounded-full bg-[#f8c33c] text-[#1d1b18] text-xs font-black uppercase border border-[#1d1b18]">Gemma 4</span>
+          </div>
+        </div>
+      )}
+
       {/* F. FINAL VERDICT BANNER (If completed) */}
       {caseData.verdict && caseData.status === 'completed' && (
         <VerdictBanner
@@ -391,18 +495,18 @@ export const Courtroom: React.FC = () => {
 
       {/* C. DEBATE TIMELINE & DOCKET ENTRIES */}
       <div className="rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] p-6 sm:p-8 space-y-5">
-        <div className="flex items-center justify-between pb-3 border-b-2 border-[#1d1b18]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-2 border-[#1d1b18]">
           <div>
             <h2 className="font-brand font-black text-2xl uppercase tracking-tight text-[#1d1b18] flex items-center gap-2">
               <FileText className="w-5 h-5 text-[#f47a22]" />
-              Court Docket Timeline
+              Courtroom Deliberation Chamber & Docket
             </h2>
             <p className="text-xs font-semibold text-[#6e665b] mt-0.5">
-              Live transcript of formal agent pleadings, objections, and evidentiary citations.
+              Live multi-model cross-examination transcript between Groq (Ghost & Defense), Sarvam AI (Prosecution & Fact-Check), and Gemma 4 (Supreme Judge).
             </p>
           </div>
-          <span className="px-3 py-1 rounded-full bg-[#f8c33c] border-2 border-[#1d1b18] font-brand font-black text-xs text-[#1d1b18] uppercase">
-            {caseData.investigationEvents.length} FILINGS
+          <span className="px-3 py-1 rounded-full bg-[#f8c33c] border-2 border-[#1d1b18] font-brand font-black text-xs text-[#1d1b18] uppercase self-start sm:self-auto shadow-[1.5px_1.5px_0px_#1d1b18]">
+            {caseData.investigationEvents.length} COURT DOCKET ENTRIES
           </span>
         </div>
 
@@ -415,28 +519,26 @@ export const Courtroom: React.FC = () => {
           <div className="space-y-4">
             {caseData.investigationEvents.map((evt) => {
               const isExpanded = expandedEvents[evt.eventId] ?? true;
+              const meta = getAgentMeta(evt.agentName, evt.eventType);
               const isGhostAdversarial = evt.eventType === 'ADVERSARIAL_ARGUMENT_FILED';
-              const isProsecution = evt.eventType === 'OBJECTIONS_ENTERED';
-              const isDefense = evt.eventType === 'DEFENSE_ARGUMENTS_FILED';
-              const isVerdict = evt.eventType === 'VERDICT_RENDERED';
-
-              const cardBorder =
-                isGhostAdversarial ? 'border-[#56b29e] bg-[#56b29e]/15' :
-                isProsecution ? 'border-[#f47a22] bg-[#f47a22]/15' :
-                isDefense ? 'border-[#7a8fd8] bg-[#7a8fd8]/15' :
-                isVerdict ? 'border-[#f8c33c] bg-[#f8c33c]/20' :
-                'border-[#1d1b18] bg-[#f1e4cf]';
+              const isSpoken = meta.isDialogue || evt.content.startsWith('[');
 
               return (
                 <div
                   key={evt.eventId}
-                  className={`rounded-[16px] border-[2px] border-[#1d1b18] p-4 transition-all shadow-[2px_2px_0px_#1d1b18] ${cardBorder}`}
+                  className={`rounded-[18px] border-[2.5px] border-[#1d1b18] p-4 sm:p-5 transition-all shadow-[2.5px_2.5px_0px_#1d1b18] ${meta.cardBorder}`}
                 >
                   {/* Event Header */}
-                  <div className="flex items-center justify-between gap-3 mb-2">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <div className="w-8 h-8 rounded-full bg-[#1d1b18] text-white flex items-center justify-center text-sm border border-[#1d1b18] shrink-0">
+                        <span>{meta.avatar}</span>
+                      </div>
                       <span className="font-brand font-black text-base text-[#1d1b18] uppercase">
                         {evt.agentName}
+                      </span>
+                      <span className={`text-[10px] font-brand font-black uppercase px-2 py-0.5 rounded-full border border-[#1d1b18] shadow-[1px_1px_0px_#1d1b18] ${meta.modelBadgeBg}`}>
+                        {meta.modelTag}
                       </span>
                       <span className="text-[10px] font-brand font-black uppercase px-2 py-0.5 rounded-full bg-[#1d1b18] text-[#f8eedc]">
                         {evt.eventType.replace(/_/g, ' ')}
@@ -444,12 +546,13 @@ export const Courtroom: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold text-[#6e665b]">
+                      <span className="text-[11px] font-mono-code font-bold text-[#6e665b]">
                         {new Date(evt.timestamp).toLocaleTimeString()}
                       </span>
                       <button
                         onClick={() => toggleEventExpand(evt.eventId)}
-                        className="w-7 h-7 rounded-full bg-[#f8eedc] border border-[#1d1b18] flex items-center justify-center hover:bg-[#ebdcc4] transition-colors"
+                        className="w-7 h-7 rounded-full bg-[#f8eedc] border-2 border-[#1d1b18] flex items-center justify-center hover:bg-[#ebdcc4] transition-colors shadow-[1px_1px_0px_#1d1b18]"
+                        title={isExpanded ? 'Collapse' : 'Expand'}
                       >
                         {isExpanded ? <ChevronUp className="w-3.5 h-3.5 text-[#1d1b18]" /> : <ChevronDown className="w-3.5 h-3.5 text-[#1d1b18]" />}
                       </button>
@@ -458,16 +561,33 @@ export const Courtroom: React.FC = () => {
 
                   {/* Ghost Adversarial Special Warning Banner */}
                   {isGhostAdversarial && (
-                    <div className="my-2 px-3 py-1 rounded-[10px] bg-[#f47a22] text-[#fff] border border-[#1d1b18] text-[10px] font-brand font-black uppercase tracking-wider flex items-center gap-2">
+                    <div className="my-2.5 px-3 py-1.5 rounded-[10px] bg-[#f47a22] text-[#fff] border-2 border-[#1d1b18] text-[10px] font-brand font-black uppercase tracking-wider flex items-center gap-2 shadow-[1px_1px_0px_#1d1b18]">
                       <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                      <span>ADVERSARIAL TEST ARGUMENT — NOT VERIFIED FACT</span>
+                      <span>ADVERSARIAL STRESS TEST — DELIBERATE COUNTER-PREMISE FOR COURTROOM SCRUTINY</span>
                     </div>
                   )}
 
-                  {/* Event Content */}
-                  <div className="text-xs sm:text-sm text-[#1d1b18] font-medium leading-relaxed">
-                    {evt.content}
-                  </div>
+                  {/* Event Content (Spoken Oral Dialogue vs Standard Notice) */}
+                  {isSpoken ? (
+                    <div className="p-3.5 sm:p-4 rounded-[14px] bg-white/90 border-2 border-[#1d1b18] shadow-[2px_2px_0px_#1d1b18]">
+                      <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-[#1d1b18]/15">
+                        <span className="text-[10px] font-brand font-black uppercase tracking-wider text-[#6e665b] flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-[#f47a22] inline-block" />
+                          Courtroom Cross-Examination Speech
+                        </span>
+                        <span className="text-[10px] font-mono-code font-bold text-[#6e665b]">
+                          {meta.speakerRole}
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm font-bold text-[#1d1b18] leading-relaxed">
+                        {evt.content}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="text-xs sm:text-sm text-[#1d1b18] font-medium leading-relaxed bg-[#f8eedc]/60 p-3 rounded-[12px] border border-[#1d1b18]/30">
+                      {evt.content}
+                    </div>
+                  )}
 
                   {/* Structured data rendering if expanded */}
                   {isExpanded && evt.data && (

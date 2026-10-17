@@ -84,6 +84,27 @@ export const NewInvestigation: React.FC = () => {
     }
   };
 
+  const PRESETS = [
+    {
+      label: '1+1=2 or 11 (Type Coercion)',
+      claim: "In JavaScript, 1+1=2 while '1'+'1'='11'. Thus 1+1 equals both 2 and 11 depending on type coercion.",
+      title: "JavaScript Type Coercion: 1+1=2 or 11",
+      category: 'programming' as Category
+    },
+    {
+      label: 'Event Loop Preemption',
+      claim: "In JavaScript, setTimeout(fn, 0) executes immediately before any other code in the call stack runs.",
+      title: "setTimeout(fn, 0) Call Stack Preemption",
+      category: 'programming' as Category
+    },
+    {
+      label: 'Great Wall from Moon',
+      claim: "The Great Wall of China is the only human-made structure visible from the Moon with the naked eye.",
+      title: "Great Wall of China Naked-Eye Lunar Visibility",
+      category: 'general' as Category
+    }
+  ];
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Page Header */}
@@ -93,12 +114,15 @@ export const NewInvestigation: React.FC = () => {
           <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full bg-[#56b29e] border border-[#1d1b18] text-[11px] font-brand font-black uppercase text-[#1d1b18]">
             FILING & ADMISSION
           </span>
+          <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full bg-[#f8c33c] border border-[#1d1b18] text-[11px] font-brand font-black uppercase text-[#1d1b18]">
+            GEMMA 4 + SARVAM + GROQ
+          </span>
         </div>
         <h1 className="font-brand font-black text-4xl sm:text-6xl text-[#1d1b18] uppercase leading-none">
           SUBMIT CLAIM & START INVESTIGATION.
         </h1>
         <p className="text-sm font-semibold text-[#6e665b] mt-2 max-w-2xl">
-          Submit any generative response, technical code snippet, or disputed factual statement to empanel the autonomous multi-agent courtroom.
+          Empanel an adversarial courtroom: Groq (Ghost & Defense) vs Sarvam AI (Prosecutor) vs Google Gemma 4 (Supreme Judge).
         </p>
       </div>
 
@@ -111,6 +135,28 @@ export const NewInvestigation: React.FC = () => {
 
       {/* Main Form Panel */}
       <form onSubmit={handleSubmit} className="p-6 sm:p-8 rounded-[22px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] space-y-6">
+        {/* Quick Load Presets */}
+        <div>
+          <label className="block font-brand font-black text-xs uppercase tracking-wider text-[#6e665b] mb-2 flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#f47a22]" /> Quick-Load Hackathon Showcase Claims:
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {PRESETS.map((p, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  setClaim(p.claim);
+                  setTitle(p.title);
+                  setCategory(p.category);
+                }}
+                className="px-3 py-1.5 rounded-full bg-[#f1e4cf] hover:bg-[#f8c33c] border border-[#1d1b18] text-xs font-brand font-black uppercase text-[#1d1b18] shadow-[1px_1px_0px_#1d1b18] transition-all cursor-pointer"
+              >
+                + {p.label}
+              </button>
+            ))}
+          </div>
+        </div>
         {/* Category Selector */}
         <div>
           <label className="block font-brand font-black text-sm uppercase tracking-wider text-[#1d1b18] mb-2">

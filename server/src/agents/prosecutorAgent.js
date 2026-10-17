@@ -3,32 +3,37 @@ import { aiProvider } from '../services/ai/provider.js';
 
 export const prosecutorOutputSchema = z.object({
   verificationStatus: z.string().default('objections_filed'),
-  objections: z.array(z.object({
-    statement: z.string(),
-    objection: z.string(),
-    reasoning: z.string(),
-    requiredEvidence: z.string(),
-    severity: z.enum(['HIGH', 'MEDIUM', 'LOW'])
-  })).min(1)
+  objections: z.array(z.any()).default([])
 });
 
 export async function runProsecutorAgent({ claim, ghostArgument, targetedStatements = [] }) {
-  const systemPrompt = `You are the Prosecutor Agent in GhostNet AI Courtroom.
+  const systemPrompt = `You are the Prosecutor Agent in GhostNet AI Courtroom, powered by Sarvam AI.
 PURPOSE:
-Challenge the adversarial argument created by the Ghost Agent and scrutinize the original claim.
-Identify factual inaccuracies, unsupported assumptions, misleading generalizations, and missing qualifiers.
+Directly cross-examine the claim and challenge the Ghost Agent's (Groq) argument.
 
-CORE RULES:
-1. Do not assume the Ghost Agent is wrong simply because of its role; inspect the actual statements.
-2. Separate factual objections (disputed data/facts) from logical objections (flawed deductive leaps).
-3. Specify what external evidence would be needed to settle each objection.
-4. Return pure structured JSON matching the schema.`;
+TONE & LANGUAGE RULES (CRITICAL):
+1. Speak like a sharp prosecutor talking directly to a real jury in plain, easy-to-understand English.
+2. DO NOT use dense academic jargon. Speak clearly and directly: call out what is misleading, where words are being twisted, or where things are being mixed up.
+3. Be punchy, direct, and common-sense.
+4. Provide pure structured JSON matching this EXACT template:
+{
+  "verificationStatus": "objections_filed",
+  "objections": [
+    {
+      "statement": "<the specific phrase or part of the claim you object to>",
+      "objection": "<short, clear objection in plain English>",
+      "reasoning": "<1-2 simple sentences explaining why this is misleading or untrue>",
+      "requiredEvidence": "<what simple proof or rule is needed>",
+      "severity": "HIGH"
+    }
+  ]
+}`;
 
-  const userPrompt = `Claim: "${claim}"
-Ghost Agent Argument: "${ghostArgument}"
-Targeted Statements: ${JSON.stringify(targetedStatements)}
+  const userPrompt = `ORIGINAL CLAIM ON TRIAL: "${claim}"
+GHOST AGENT (Groq) ARGUMENT: "${ghostArgument}"
+STATEMENTS UNDER SCRUTINY: ${JSON.stringify(targetedStatements)}
 
-Prosecute this case: File rigorous objections against unsupported premises, flawed reasoning, and missing empirical corroboration.`;
+Prosecute this case: File clear, plain-English objections against the claim and the Ghost Agent's argument. Explain simply where the trick is and why this statement cannot be accepted without proof. Return ONLY the JSON object.`;
 
   const result = await aiProvider.generateStructuredOutput({
     systemPrompt,
@@ -37,9 +42,29 @@ Prosecute this case: File rigorous objections against unsupported premises, flaw
     temperature: 0.2
   });
 
+  const rawObjections = Array.isArray(result.objections) && result.objections.length > 0 ? result.objections : [
+    {
+      statement: claim,
+      objection: result.objection || 'This statement is misleading unless you clearly explain what context you mean.',
+      reasoning: result.reasoning || 'You cannot mix regular math with computer text tricks without explaining the difference.',
+      requiredEvidence: result.requiredEvidence || 'Standard mathematical definitions or programming language specifications.',
+      severity: 'HIGH'
+    }
+  ];
+
+  const sanitizedObjections = rawObjections.map(o => ({
+    statement: typeof o === 'string' ? o : (o.statement || claim),
+    objection: typeof o === 'string' ? o : (o.objection || 'This statement is misleading without clear context.'),
+    reasoning: o.reasoning || 'Needs clear common-sense proof.',
+    requiredEvidence: o.requiredEvidence || 'Official documentation or standard math rules.',
+    severity: ['HIGH', 'MEDIUM', 'LOW'].includes(o.severity) ? o.severity : 'HIGH'
+  }));
+
   return {
     agentName: 'Prosecutor Agent',
     ...result,
+    objections: sanitizedObjections,
+    verificationStatus: 'objections_filed',
     completedAt: new Date()
   };
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Gavel, CheckCircle, XCircle, AlertTriangle, HelpCircle, FileText,
   ExternalLink, ArrowRight, ShieldCheck, RotateCcw, Download, Sparkles,
-  ChevronDown, ChevronUp, AlertCircle, Link2, Send, Check
+  ChevronDown, ChevronUp, AlertCircle, Link2, Send, Check, Scale
 } from 'lucide-react';
 import { VerdictData, VerdictType, EvidenceRecord, CaseData } from '../types';
 import { api } from '../services/api';
@@ -162,6 +162,99 @@ export const VerdictBanner: React.FC<VerdictBannerProps> = ({
             {verdict.summary}
           </p>
         </div>
+
+        {/* DEFINITIVE JUDICIAL TAKEAWAY */}
+        {verdict.takeaway && (
+          <div className="p-5 rounded-[18px] bg-[#1d1b18] text-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#f8c33c] flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-[#f8c33c] text-[#1d1b18] flex items-center justify-center shrink-0 border border-[#1d1b18]">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded-full bg-[#f8c33c] text-[#1d1b18] font-brand font-black text-[10px] uppercase tracking-wider">
+                  GEMMA 4 SUPREME RULING TAKEAWAY
+                </span>
+                <span className="text-[10px] font-mono-code text-[#ebdcc4] uppercase">
+                  Adjudicated in Dialectic
+                </span>
+              </div>
+              <p className="text-base sm:text-lg font-brand font-bold text-white leading-snug">
+                "{verdict.takeaway}"
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* COURT TRUTH BREAKDOWN MATRIX */}
+        {verdict.truthBreakdown && verdict.truthBreakdown.length > 0 && (
+          <div className="p-5 sm:p-6 rounded-[20px] bg-[#f8eedc] border-[2.5px] border-[#1d1b18] shadow-[3px_3px_0px_#1d1b18] space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b-2 border-[#1d1b18]">
+              <div className="flex items-center gap-2">
+                <Scale className="w-5 h-5 text-[#f47a22]" />
+                <h4 className="font-brand font-black text-lg uppercase text-[#1d1b18]">
+                  Court Truth Breakdown Matrix
+                </h4>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full bg-[#1d1b18] text-[#f8eedc] font-brand font-black text-xs uppercase tracking-wider self-start sm:self-auto">
+                {verdict.truthBreakdown.length} SUB-PREMISES ADJUDICATED
+              </span>
+            </div>
+
+            <p className="text-xs font-semibold text-[#6e665b]">
+              Cross-model synthesis of distinct logical, technical, and mathematical propositions tested during courtroom cross-examination.
+            </p>
+
+            <div className="overflow-x-auto rounded-[14px] border-2 border-[#1d1b18]">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#1d1b18] text-[#f8eedc] text-[11px] font-brand font-black uppercase tracking-wider">
+                    <th className="py-2.5 px-3.5 border-r border-[#3a352e] w-12 text-center">#</th>
+                    <th className="py-2.5 px-4 border-r border-[#3a352e] min-w-[180px]">Proposition / Sub-Premise</th>
+                    <th className="py-2.5 px-3.5 border-r border-[#3a352e] w-36 text-center">Evaluation</th>
+                    <th className="py-2.5 px-4 min-w-[260px]">Normative & Technical Grounding</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y-2 divide-[#1d1b18] bg-[#f8eedc] text-xs font-medium text-[#1d1b18]">
+                  {verdict.truthBreakdown.map((row, idx) => {
+                    const premiseText = row.premise || row.subPremise || `Sub-Premise ${idx + 1}`;
+                    const statusText = row.status || row.verdict || 'EVALUATED';
+                    const st = String(statusText).toUpperCase();
+                    const isTrue = st === 'TRUE' || st === 'SUPPORTED';
+                    const isFalse = st === 'FALSE' || st === 'REFUTED';
+
+                    const statusBg = isTrue
+                      ? 'bg-[#56b29e] text-[#1d1b18]'
+                      : isFalse
+                      ? 'bg-[#e5452f] text-white'
+                      : 'bg-[#f8c33c] text-[#1d1b18]';
+
+                    const StatusIcon = isTrue ? CheckCircle : isFalse ? XCircle : AlertTriangle;
+
+                    return (
+                      <tr key={idx} className="hover:bg-[#f1e4cf]/80 transition-colors">
+                        <td className="py-3 px-3.5 border-r-2 border-[#1d1b18] font-brand font-black text-center text-[#6e665b]">
+                          {idx + 1}
+                        </td>
+                        <td className="py-3 px-4 border-r-2 border-[#1d1b18] font-bold text-sm text-[#1d1b18]">
+                          {premiseText}
+                        </td>
+                        <td className="py-3 px-3.5 border-r-2 border-[#1d1b18] text-center">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-brand font-black uppercase tracking-wider border border-[#1d1b18] shadow-[1px_1px_0px_#1d1b18] ${statusBg}`}>
+                            <StatusIcon className="w-3.5 h-3.5" />
+                            {statusText}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-[#3a352e] font-medium leading-relaxed">
+                          {row.explanation}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
         {/* B. EVIDENTIARY CONNECTION FLOW: Claims → Evidence → Agent Arguments → Verdict */}
         <div className="p-5 sm:p-6 rounded-[20px] bg-[#f8eedc] border-2 border-[#1d1b18] shadow-[2px_2px_0px_#1d1b18] space-y-4">

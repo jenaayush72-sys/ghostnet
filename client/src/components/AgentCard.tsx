@@ -18,6 +18,7 @@ const AGENT_CONFIGS: Record<AgentRole, {
   icon: React.ElementType;
   color: string;
   badge: string;
+  modelTag: string;
 }> = {
   ghost: {
     name: 'Ghost Agent',
@@ -25,7 +26,8 @@ const AGENT_CONFIGS: Record<AgentRole, {
     roleDescription: 'Formulates deliberately flawed premises to test factual resilience.',
     icon: Ghost,
     color: 'bg-[#56b29e]',
-    badge: 'PROBE'
+    badge: 'PROBE',
+    modelTag: 'Groq (120B)'
   },
   prosecutor: {
     name: 'Prosecutor Agent',
@@ -33,7 +35,8 @@ const AGENT_CONFIGS: Record<AgentRole, {
     roleDescription: 'Files formal objections against unsupported assumptions and causal leaps.',
     icon: ShieldX,
     color: 'bg-[#f47a22]',
-    badge: 'OBJECTION'
+    badge: 'OBJECTION',
+    modelTag: 'Sarvam AI (105B)'
   },
   defense: {
     name: 'Defense Agent',
@@ -41,7 +44,8 @@ const AGENT_CONFIGS: Record<AgentRole, {
     roleDescription: 'Tests the strength of prosecution and clarifies operational boundary conditions.',
     icon: ShieldCheck,
     color: 'bg-[#7a8fd8]',
-    badge: 'DEFENSE'
+    badge: 'DEFENSE',
+    modelTag: 'Groq (120B)'
   },
   evidence: {
     name: 'Evidence Agent',
@@ -49,7 +53,8 @@ const AGENT_CONFIGS: Record<AgentRole, {
     roleDescription: 'Indexes official specifications, documentation, and verified publications.',
     icon: Search,
     color: 'bg-[#5fb2e6]',
-    badge: 'EVIDENCE'
+    badge: 'EVIDENCE',
+    modelTag: 'Live Web & Wikipedia'
   },
   factChecker: {
     name: 'Fact-Checker Agent',
@@ -57,7 +62,8 @@ const AGENT_CONFIGS: Record<AgentRole, {
     roleDescription: 'Audits claims against source excerpts to eliminate confirmation bias.',
     icon: FileCheck,
     color: 'bg-[#f28cbf]',
-    badge: 'AUDIT'
+    badge: 'AUDIT',
+    modelTag: 'Sarvam AI Audit'
   },
   judge: {
     name: 'Judge Agent',
@@ -65,7 +71,8 @@ const AGENT_CONFIGS: Record<AgentRole, {
     roleDescription: 'Weighs evidence priority over agent agreement to issue binding verdict.',
     icon: Gavel,
     color: 'bg-[#f8c33c]',
-    badge: 'VERDICT'
+    badge: 'VERDICT',
+    modelTag: 'Gemma 4 31B'
   }
 };
 
@@ -107,6 +114,9 @@ export const AgentCard: React.FC<AgentCardProps> = ({
             <p className="text-[10px] font-bold uppercase text-[#6e665b]">
               {config.title}
             </p>
+            <span className="inline-block mt-1 px-1.5 py-0.5 rounded-md bg-[#1d1b18] text-[#f8eedc] text-[9px] font-mono font-bold tracking-tight">
+              {config.modelTag}
+            </span>
           </div>
         </div>
 

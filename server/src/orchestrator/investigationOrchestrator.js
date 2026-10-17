@@ -109,7 +109,7 @@ class InvestigationOrchestrator {
         stage: 'ghost_analysis',
         agentName: 'Ghost Agent',
         eventType: 'STAGE_STARTED',
-        content: 'Ghost Agent formulating deliberate adversarial argument and isolated premise flaws...'
+        content: 'Ghost Agent is formulating a clever counter-argument to test the claim...'
       });
 
       const [ghostResult, evidenceResult] = await Promise.all([
@@ -127,9 +127,9 @@ class InvestigationOrchestrator {
 
       await this.emitEvent(caseId, {
         stage: 'ghost_analysis',
-        agentName: 'Ghost Agent',
+        agentName: 'Ghost Agent (Groq)',
         eventType: 'ADVERSARIAL_ARGUMENT_FILED',
-        content: ghostResult.adversarialArgument,
+        content: `[Ghost Agent — Groq]: "${ghostResult.adversarialArgument}"`,
         data: {
           targetedStatements: ghostResult.targetedStatements,
           potentialErrorType: ghostResult.potentialErrorType,
@@ -161,9 +161,9 @@ class InvestigationOrchestrator {
       await CaseRepository.updateByCaseId(caseId, { currentStage: 'prosecution' });
       await this.emitEvent(caseId, {
         stage: 'prosecution',
-        agentName: 'Prosecutor Agent',
+        agentName: 'Prosecutor Agent (Sarvam AI)',
         eventType: 'STAGE_STARTED',
-        content: 'Prosecutor Agent examining Ghost Agent argument and identifying logical and factual fallacies...'
+        content: 'Prosecutor Agent (Sarvam AI) is questioning the assumptions and pointing out misleading claims...'
       });
 
       const prosecutorResult = await runProsecutorAgent({
@@ -172,11 +172,16 @@ class InvestigationOrchestrator {
         targetedStatements: ghostResult.targetedStatements
       });
 
+      const firstObj = prosecutorResult?.objections?.[0];
+      const spokenProsecution = firstObj
+        ? `The Prosecution formally objects to "${firstObj.statement}": ${firstObj.objection} ${firstObj.reasoning}`
+        : `Prosecutor filed formal objections against unsupported premises.`;
+
       await this.emitEvent(caseId, {
         stage: 'prosecution',
-        agentName: 'Prosecutor Agent',
+        agentName: 'Prosecutor Agent (Sarvam AI)',
         eventType: 'OBJECTIONS_ENTERED',
-        content: `Prosecutor filed ${prosecutorResult?.objections?.length || 0} formal objection(s) against unsupported premises.`,
+        content: `[Prosecutor — Sarvam 105B]: "${spokenProsecution}"`,
         data: { objections: prosecutorResult?.objections || [] }
       });
 
@@ -188,9 +193,9 @@ class InvestigationOrchestrator {
       await CaseRepository.updateByCaseId(caseId, { currentStage: 'defense' });
       await this.emitEvent(caseId, {
         stage: 'defense',
-        agentName: 'Defense Agent',
+        agentName: 'Defense Agent (Groq)',
         eventType: 'STAGE_STARTED',
-        content: 'Defense Agent testing prosecutorial objections, establishing operational bounds and counterarguments...'
+        content: 'Defense Agent (Groq) is stepping in to explain where and why this claim actually makes sense...'
       });
 
       const defenseResult = await runDefenseAgent({
@@ -199,11 +204,16 @@ class InvestigationOrchestrator {
         ghostArgument: ghostResult.adversarialArgument
       });
 
+      const firstDefense = defenseResult?.counterarguments?.[0];
+      const spokenDefense = firstDefense
+        ? `Defense Counsel clarifies: ${firstDefense.defenseArgument} (Valid when: ${firstDefense.conditionsWhereTrue})`
+        : `Defense presented contextual boundaries.`;
+
       await this.emitEvent(caseId, {
         stage: 'defense',
-        agentName: 'Defense Agent',
+        agentName: 'Defense Agent (Groq)',
         eventType: 'DEFENSE_ARGUMENTS_FILED',
-        content: `Defense presented ${defenseResult?.counterarguments?.length || 0} counterargument(s) and contextual qualifications.`,
+        content: `[Defense — Groq]: "${spokenDefense}"`,
         data: {
           counterarguments: defenseResult?.counterarguments || [],
           acceptedObjections: defenseResult?.objectionsAccepted || [],
@@ -220,9 +230,9 @@ class InvestigationOrchestrator {
       await CaseRepository.updateByCaseId(caseId, { currentStage: 'fact_checking' });
       await this.emitEvent(caseId, {
         stage: 'fact_checking',
-        agentName: 'Fact-Checker Agent',
+        agentName: 'Fact-Checker Agent (Sarvam AI)',
         eventType: 'STAGE_STARTED',
-        content: 'Fact-Checker independently corroborating arguments against indexed primary evidence...'
+        content: 'Fact-Checker Agent (Sarvam AI) is checking the facts and code rules against verified sources...'
       });
 
       const factCheckerResult = await runFactCheckerAgent({
@@ -233,9 +243,9 @@ class InvestigationOrchestrator {
 
       await this.emitEvent(caseId, {
         stage: 'fact_checking',
-        agentName: 'Fact-Checker Agent',
+        agentName: 'Fact-Checker Agent (Sarvam AI)',
         eventType: 'FACT_CHECK_REPORT_FILED',
-        content: factCheckerResult.recommendedConclusion,
+        content: `[Auditor — Sarvam]: "${factCheckerResult.recommendedConclusion || 'Evidence audit completed.'}"`,
         data: {
           claimAssessments: factCheckerResult.claimAssessments,
           citationProblems: factCheckerResult.citationProblems,
@@ -251,9 +261,9 @@ class InvestigationOrchestrator {
       await CaseRepository.updateByCaseId(caseId, { currentStage: 'judgment' });
       await this.emitEvent(caseId, {
         stage: 'judgment',
-        agentName: 'Judge Agent',
+        agentName: 'Gemma 4 Judge',
         eventType: 'STAGE_STARTED',
-        content: 'Court is now in session for final adjudication. Weighing evidentiary weight and agent pleadings...'
+        content: 'Supreme Judge Gemma 4 has entered the courtroom to deliver the final, plain-English ruling...'
       });
 
       const judgeResult = await runJudgeAgent({
@@ -267,13 +277,15 @@ class InvestigationOrchestrator {
 
       await this.emitEvent(caseId, {
         stage: 'judgment',
-        agentName: 'Judge Agent',
+        agentName: 'Gemma 4 Judge',
         eventType: 'VERDICT_RENDERED',
-        content: `VERDICT: ${judgeResult.verdict} — ${judgeResult.summary}`,
+        content: `[Gemma 4 Supreme Ruling]: VERDICT: ${judgeResult.verdict.toUpperCase()} — ${judgeResult.takeaway || judgeResult.summary}`,
         data: {
           verdict: judgeResult.verdict,
+          takeaway: judgeResult.takeaway,
           summary: judgeResult.summary,
           reasoning: judgeResult.reasoning,
+          truthBreakdown: judgeResult.truthBreakdown,
           supportingFindings: judgeResult.supportingFindings,
           contradictingFindings: judgeResult.contradictingFindings,
           citedEvidenceIds: judgeResult.citedEvidenceIds,

@@ -61,10 +61,20 @@ export interface ClaimAssessment {
   assessment: string;
 }
 
+export interface TruthPremise {
+  premise?: string;
+  subPremise?: string;
+  status?: string;
+  verdict?: string;
+  explanation: string;
+}
+
 export interface VerdictData {
   verdict: VerdictType;
+  takeaway?: string;
   summary: string;
   reasoning: string;
+  truthBreakdown?: TruthPremise[];
   supportingFindings: string[];
   contradictingFindings: string[];
   citedEvidenceIds: string[];
