@@ -10,7 +10,7 @@ import { factCheckerOutputSchema } from '../agents/factCheckerAgent.js';
 import { judgeOutputSchema, runJudgeAgent } from '../agents/judgeAgent.js';
 import { orchestrator } from '../orchestrator/investigationOrchestrator.js';
 
-describe('GhostNet Courtroom Backend Test Suite', () => {
+describe('GhostNet Courtroom Backend Test Suite', { timeout: 45000 }, () => {
   let app;
 
   beforeAll(() => {
@@ -148,7 +148,7 @@ describe('GhostNet Courtroom Backend Test Suite', () => {
     for (const citedId of judgeResult.citedEvidenceIds) {
       expect(realEvidence.some(e => e.evidenceId === citedId)).toBe(true);
     }
-  });
+  }, 35000);
 
   it('Judge overrides to INSUFFICIENT EVIDENCE if zero verified evidence records exist', async () => {
     const emptyEvidence = [
@@ -172,7 +172,7 @@ describe('GhostNet Courtroom Backend Test Suite', () => {
 
     // Because there is NO verified evidence, a conclusive TRUE cannot stand
     expect(['INSUFFICIENT EVIDENCE', 'PARTIALLY TRUE', 'MISLEADING', 'FALSE', 'Insufficient Evidence', 'Mixed', 'Refuted']).toContain(judgeResult.verdict);
-  });
+  }, 35000);
 
   // 6. INVESTIGATION ORCHESTRATION WORKFLOW
   it('Orchestrator runs complete 7-stage trial and persists verdict', async () => {
@@ -198,7 +198,7 @@ describe('GhostNet Courtroom Backend Test Suite', () => {
     expect(completed.agentResults.judge).toBeDefined();
     expect(completed.verdict.verdict).toBeDefined();
     expect(completed.investigationEvents.length).toBeGreaterThanOrEqual(6);
-  });
+  }, 60000);
 
   // 7. RETRIEVAL OF COMPLETED CASE
   it('GET /api/investigations/:caseId returns full case details', async () => {

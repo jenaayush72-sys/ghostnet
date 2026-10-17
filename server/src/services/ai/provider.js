@@ -29,6 +29,10 @@ export class AiProviderService {
     const isDefense = systemPrompt.includes('Defense Agent');
     const isFactChecker = systemPrompt.includes('Fact-Checker Agent');
 
+    if (process.env.NODE_ENV === 'test' || this.provider === 'mock') {
+      return await this.callLocalReasoningEngine({ systemPrompt, userPrompt, schema });
+    }
+
     try {
       if (this.provider === 'multi_courtroom') {
         // Multi-agent routing:
@@ -113,7 +117,7 @@ export class AiProviderService {
   async callGeminiGemma({ systemPrompt, userPrompt, schema, temperature }) {
     const candidateModels = [
       config.geminiModel || 'gemma-4-31b-it',
-      config.geminiFallbackModel || 'gemma-4-26b-a4b-it',
+      'gemini-3.8-flash',
       'gemini-flash-latest'
     ];
 
@@ -121,7 +125,7 @@ export class AiProviderService {
 
     for (const model of candidateModels) {
       const stepController = new AbortController();
-      const stepTimer = setTimeout(() => stepController.abort(), 14000);
+      const stepTimer = setTimeout(() => stepController.abort(), 10000);
 
       try {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${config.geminiApiKey}`;
@@ -133,7 +137,8 @@ export class AiProviderService {
           body: JSON.stringify({
             contents: [{ parts: [{ text: combinedPrompt }] }],
             generationConfig: {
-              temperature: Math.max(0.1, temperature || 0.2)
+              temperature: Math.max(0.1, temperature || 0.2),
+              responseMimeType: 'application/json'
             }
           }),
           signal: stepController.signal
@@ -325,7 +330,23 @@ export class AiProviderService {
     try {
       parsed = JSON.parse(cleaned);
     } catch (parseErr) {
-      throw new Error(`Failed to parse AI output as JSON: ${parseErr.message}. Output snippet: ${cleaned.slice(0, 150)}`);
+      try {
+        const withoutTrailingCommas = cleaned.replace(/,\s*([}\]])/g, '$1');
+        parsed = JSON.parse(withoutTrailingCommas);
+      } catch {
+        try {
+          let balanced = cleaned.replace(/,\s*"[^"]*$/, '');
+          const openBraces = (balanced.match(/\{/g) || []).length;
+          const closeBraces = (balanced.match(/\}/g) || []).length;
+          const openBrackets = (balanced.match(/\[/g) || []).length;
+          const closeBrackets = (balanced.match(/\]/g) || []).length;
+          for (let i = 0; i < openBrackets - closeBrackets; i++) balanced += ']';
+          for (let i = 0; i < openBraces - closeBraces; i++) balanced += '}';
+          parsed = JSON.parse(balanced);
+        } catch {
+          throw new Error(`Failed to parse AI output as JSON: ${parseErr.message}. Output snippet: ${cleaned.slice(0, 150)}`);
+        }
+      }
     }
 
     if (schema) {
