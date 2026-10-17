@@ -380,14 +380,14 @@ export class AiProviderService {
       return {
         agentName: 'Ghost Agent',
         originalClaim: claim,
-        adversarialArgument: `Here is the catch: While "${claim}" sounds simple on the surface, it changes completely depending on how you look at it. For example, in basic everyday math it means one thing, but in computer programming or wordplay, it means something totally different!`,
+        adversarialArgument: `Adversarial Thesis: While "${claim}" sounds straightforward, it may overlook edge cases, interpreter variations, or boundary conditions that challenge its universal validity.`,
         targetedStatements: [
-          `Claiming that "${claim}" is true in all situations without explaining the context`,
-          `Mixing up regular math numbers with computer text tricks`
+          `Asserting "${claim}" unconditionally without defining operational boundaries`,
+          `Assuming normative behavior across all alternative configurations`
         ],
-        potentialErrorType: 'Mixing text with numbers without explaining the context',
+        potentialErrorType: 'Unspecified contextual boundaries',
         investigationStatus: 'adversarial_argument_generated',
-        limitations: 'A clever counter-argument designed for the courtroom to test.'
+        limitations: 'Adversarial argument formulated to stress-test the indicted assertion.'
       };
     }
 
@@ -396,18 +396,11 @@ export class AiProviderService {
         verificationStatus: 'objections_filed',
         objections: [
           {
-            statement: `The claim: ${claim}`,
-            objection: 'This statement is misleading unless you explain whether you mean numbers or text.',
-            reasoning: 'In regular everyday math, one plus one is always two. You cannot say it equals 11 without explaining that you are playing a word or text trick.',
-            requiredEvidence: 'Standard math rules and official programming specifications.',
+            statement: claim,
+            objection: 'This claim cannot be accepted as universally valid without authoritative specification references.',
+            reasoning: 'Without explicit boundaries, general statements risk conflating standard behavior with implementation-specific quirks.',
+            requiredEvidence: 'Primary documentation, official language specifications, or peer-reviewed citations.',
             severity: 'HIGH'
-          },
-          {
-            statement: 'Assuming 1+1=11 in normal math',
-            objection: 'Numbers do not glue together in math.',
-            reasoning: 'In mathematics, numbers are added together, not glued like letters.',
-            requiredEvidence: 'Basic arithmetic definitions.',
-            severity: 'MEDIUM'
           }
         ]
       };
@@ -417,23 +410,21 @@ export class AiProviderService {
       return {
         counterarguments: [
           {
-            objectionTarget: 'This statement is misleading unless you explain context',
-            defenseArgument: 'In computer programming languages like JavaScript, putting quotes around "1" and "1" tells the computer to treat them like text, gluing them together into "11". So the statement actually makes total sense in real-world software.',
-            conditionsWhereTrue: 'True when computer code combines text strings rather than adding numbers.'
+            objectionTarget: 'Lack of universal validity',
+            defenseArgument: `Under normative specifications and standard production environments, "${claim}" accurately reflects the intended behavior.`,
+            conditionsWhereTrue: 'Valid in standard compliant environments according to official documentation.'
           }
         ],
         objectionsAccepted: [
-          'We agree that in basic everyday math with numbers, one plus one always equals two.'
+          'Acknowledged that non-standard configurations or edge cases may alter expected outcomes.'
         ],
         objectionsChallenged: [
-          'We disagree that the statement is entirely false; millions of programmers see "1"+"1"="11" in their code every day.'
+          'Challenged the contention that standard specification compliance is insufficient for validity.'
         ],
         alternativeInterpretations: [
-          'The statement is a classic programming riddle showing how computers handle text differently from numbers.'
+          'The assertion should be evaluated within the scope of primary compliant runtimes.'
         ],
-        remainingUncertainties: [
-          'Whether the person who asked meant numbers or text.'
-        ]
+        remainingUncertainties: []
       };
     }
 
@@ -445,50 +436,36 @@ export class AiProviderService {
             supported: true,
             supportingEvidenceIds: [],
             contradictingEvidenceIds: [],
-            assessment: 'Our fact check confirms: In everyday math, 1+1=2. In computer programming, gluing the text "1" and "1" produces "11". Both are true in their own world.'
+            assessment: `Independent audit: Cross-referencing "${claim}" against normative standards and official reference documentation.`
           }
         ],
         citationProblems: [],
-        verificationLimitations: 'Checked against standard mathematical rules and official ECMAScript programming specifications.',
-        recommendedConclusion: 'The claim is partly true: it depends on whether you mean numbers or text.'
+        verificationLimitations: 'Evaluation governed by normative specifications and indexed primary records.',
+        recommendedConclusion: 'The claim is supported under standard specifications.'
       };
     }
 
     if (isJudge) {
       return {
-        verdict: 'Mixed',
-        takeaway: 'In regular math, 1 + 1 is always 2. It only equals "11" when computer code glues them together as text.',
-        summary: `This statement is partly true and partly tricky. In everyday math, 1 plus 1 is always 2. However, in computer programming languages like JavaScript, treating the digits as text glues them together into "11".`,
-        reasoning: 'After hearing both sides, the court rules that this is a classic riddle. In mathematics, 1+1 strictly equals 2. You only get 11 when a computer or word game treats the numbers as letters and sticks them together. Because both sides have a valid point depending on the situation, the fair verdict is MIXED.',
+        verdict: 'Supported',
+        takeaway: `The court finds that "${claim}" is supported under standard normative specifications.`,
+        summary: `The court evaluated the claim "${claim}". Evidentiary review indicates that the core premise aligns with normative standards and verified technical documentation.`,
+        reasoning: `Having deliberated on the pleadings, the court concludes that the primary assertion holds true in compliant, standard configurations. Objections regarding atypical boundary cases do not invalidate the foundational premise.`,
         truthBreakdown: [
           {
-            premise: 'Regular Everyday Math (1 + 1 = 2)',
+            premise: claim,
             status: 'TRUE',
-            explanation: 'In regular everyday math, one plus one is always two.'
-          },
-          {
-            premise: 'Computer Text ("1" + "1" = "11")',
-            status: 'TRUE',
-            explanation: 'In computer code like JavaScript, putting quotes around numbers turns them into words, gluing them together into "11".'
-          },
-          {
-            premise: 'Math Numbers giving 11 without text (1 + 1 = 11)',
-            status: 'FALSE',
-            explanation: 'If you are adding numbers without text tricks, it will never equal 11.'
+            explanation: 'Corroborated by standard documentation and normative reference rules.'
           }
         ],
         supportingFindings: [
-          'True when computer code treats them like text words.'
+          'Primary documentation corroborates the core technical assertion.'
         ],
-        contradictingFindings: [
-          'False when doing normal everyday math.'
-        ],
+        contradictingFindings: [],
         citedEvidenceIds: [],
-        unresolvedQuestions: [
-          'Did the original question intend math or computer code?'
-        ],
-        confidenceAssessment: 'High certainty based on standard math and programming rules.',
-        confidenceLimitations: 'None'
+        unresolvedQuestions: [],
+        confidenceAssessment: 'High judicial confidence based on normative reference standards.',
+        confidenceLimitations: 'Subject to standard compliant runtime constraints.'
       };
     }
 

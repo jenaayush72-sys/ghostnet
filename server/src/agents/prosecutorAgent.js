@@ -45,9 +45,9 @@ Prosecute this case: File clear, plain-English objections against the claim and 
   const rawObjections = Array.isArray(result.objections) && result.objections.length > 0 ? result.objections : [
     {
       statement: claim,
-      objection: result.objection || 'This statement is misleading unless you clearly explain what context you mean.',
-      reasoning: result.reasoning || 'You cannot mix regular math with computer text tricks without explaining the difference.',
-      requiredEvidence: result.requiredEvidence || 'Standard mathematical definitions or programming language specifications.',
+      objection: result.objection || 'This statement is misleading unless you clearly explain the specific context or conditions.',
+      reasoning: result.reasoning || 'Asserting this as a universal truth ignores key constraints and specifications.',
+      requiredEvidence: result.requiredEvidence || 'Authoritative specifications or verified reference documentation.',
       severity: 'HIGH'
     }
   ];
@@ -55,8 +55,8 @@ Prosecute this case: File clear, plain-English objections against the claim and 
   const sanitizedObjections = rawObjections.map(o => ({
     statement: typeof o === 'string' ? o : (o.statement || claim),
     objection: typeof o === 'string' ? o : (o.objection || 'This statement is misleading without clear context.'),
-    reasoning: o.reasoning || 'Needs clear common-sense proof.',
-    requiredEvidence: o.requiredEvidence || 'Official documentation or standard math rules.',
+    reasoning: o.reasoning || 'Needs clear common-sense proof and authoritative reference.',
+    requiredEvidence: o.requiredEvidence || 'Official documentation or normative standards.',
     severity: ['HIGH', 'MEDIUM', 'LOW'].includes(o.severity) ? o.severity : 'HIGH'
   }));
 

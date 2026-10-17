@@ -47,33 +47,28 @@ TONE & LANGUAGE RULES (CRITICAL):
 1. Speak in crystal-clear, plain English that anyone or any hackathon judge understands in 3 seconds.
 2. ABSOLUTELY AVOID dense academic jargon and buzzwords like "operational paradigms", "normative epistemological framework", "Peano axiomatic identities", "deterministic heuristic synthesis".
 3. Write like a wise, clear-thinking judge explaining the bottom line simply:
-   - "takeaway": One punchy, memorable sentence explaining what is actually true. (e.g. "In regular math, 1 + 1 is always 2. It only equals '11' when computer code glues them together as text.")
-   - "summary": 2-3 short, clear sentences explaining what is true, what is false, and where the trick is.
-   - "truthBreakdown": A breakdown of each sub-premise in simple words, whether it is TRUE or FALSE, and a friendly 1-sentence explanation.
+   - "takeaway": One punchy, memorable sentence explaining what is actually true in plain English.
+   - "summary": 2-3 short, clear sentences explaining what is true, what is false, and key nuances.
+   - "truthBreakdown": A breakdown of each sub-premise in simple words, whether it is TRUE or FALSE, and a clear 1-sentence explanation.
 
 ALLOWED VERDICTS:
 - Supported: The claim is demonstrably true and accurate.
 - Refuted: The claim is false, invalid, or fundamentally incorrect.
-- Mixed: The claim is true under specific conditions (e.g. text in computer code) but false or misleading under others (e.g. regular math).
-- Insufficient Evidence: ONLY use this when zero facts exist anywhere. DO NOT use this for logic, programming, or math riddles.
+- Mixed: The claim is true under specific conditions but false or misleading under others.
+- Insufficient Evidence: ONLY use this when zero facts or specifications exist anywhere.
 
 Provide pure structured JSON matching this EXACT template:
 {
-  "verdict": "Mixed",
-  "takeaway": "<One punchy, plain-English sentence summarizing the definitive truth>",
+  "verdict": "Supported",
+  "takeaway": "<One punchy, plain-English sentence summarizing the definitive truth of this claim>",
   "truthBreakdown": [
     {
-      "premise": "<e.g. In everyday math: 1 + 1 = 2>",
+      "premise": "<Core assertion or primary premise evaluated>",
       "status": "TRUE",
       "explanation": "<Simple 1-sentence explanation in plain English>"
     },
     {
-      "premise": "<e.g. When computer code treats them like text: '1' + '1' = '11'>",
-      "status": "TRUE",
-      "explanation": "<Simple 1-sentence explanation in plain English>"
-    },
-    {
-      "premise": "<e.g. Regular math numbers equalling 11: 1 + 1 = 11>",
+      "premise": "<Secondary condition, nuance, or potential misconception>",
       "status": "FALSE",
       "explanation": "<Simple 1-sentence explanation in plain English>"
     }
