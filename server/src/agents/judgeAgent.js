@@ -37,6 +37,7 @@ export async function runJudgeAgent({
   factCheckerResult
 }) {
   const validEvidenceIds = new Set(evidenceRecords.map(e => e.evidenceId));
+  const hasVerifiedEvidence = evidenceRecords.some(e => e.retrievalStatus === 'verified');
 
   const systemPrompt = `You are the Supreme Judge Agent in GhostNet AI Courtroom, powered by Google Gemma 4.
 PURPOSE:
@@ -126,6 +127,13 @@ Deliver your definitive Gemma 4 Judicial Ruling. Explain the bottom line in clea
     finalVerdict = 'Insufficient Evidence';
   }
 
+  let finalReasoning = result.reasoning || '';
+  // If no verified evidence exists at all, reclassify Supported to Insufficient Evidence
+  if (!hasVerifiedEvidence && finalVerdict === 'Supported') {
+    finalVerdict = 'Insufficient Evidence';
+    finalReasoning += ' [Deterministic Judicial Override: Reclassified to Insufficient Evidence because no primary verified external records could be indexed to corroborate the claim.]';
+  }
+
   const verifiedCitedIds = (result.citedEvidenceIds || []).filter(id => validEvidenceIds.has(id));
 
   // Ensure truthBreakdown is populated and normalized
@@ -172,7 +180,7 @@ Deliver your definitive Gemma 4 Judicial Ruling. Explain the bottom line in clea
     takeaway,
     summary: result.summary || takeaway,
     truthBreakdown: breakdown,
-    reasoning: result.reasoning || 'After examining the arguments, the court found that this statement depends entirely on whether you are doing real math with numbers or playing a word/text trick with computer code.',
+    reasoning: finalReasoning || 'After examining the arguments, the court found that this statement depends entirely on whether you are doing real math with numbers or playing a word/text trick with computer code.',
     supportingFindings: Array.isArray(result.supportingFindings) && result.supportingFindings.length > 0
       ? result.supportingFindings
       : ['True when treated as text in programming languages.'],

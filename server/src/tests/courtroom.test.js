@@ -171,7 +171,7 @@ describe('GhostNet Courtroom Backend Test Suite', () => {
     });
 
     // Because there is NO verified evidence, a conclusive TRUE cannot stand
-    expect(['INSUFFICIENT EVIDENCE', 'PARTIALLY TRUE', 'MISLEADING', 'FALSE']).toContain(judgeResult.verdict);
+    expect(['INSUFFICIENT EVIDENCE', 'PARTIALLY TRUE', 'MISLEADING', 'FALSE', 'Insufficient Evidence', 'Mixed', 'Refuted']).toContain(judgeResult.verdict);
   });
 
   // 6. INVESTIGATION ORCHESTRATION WORKFLOW

@@ -54,11 +54,21 @@ const caseSchema = new mongoose.Schema({
   verdict: {
     verdict: {
       type: String,
-      enum: ['TRUE', 'FALSE', 'PARTIALLY TRUE', 'MISLEADING', 'INSUFFICIENT EVIDENCE', 'PENDING', null],
+      enum: [
+        'TRUE', 'FALSE', 'PARTIALLY TRUE', 'MISLEADING', 'INSUFFICIENT EVIDENCE',
+        'Supported', 'Refuted', 'Mixed', 'Insufficient Evidence',
+        'PENDING', null
+      ],
       default: null
     },
+    takeaway: { type: String, default: '' },
     summary: { type: String, default: '' },
     reasoning: { type: String, default: '' },
+    truthBreakdown: [{
+      premise: String,
+      status: String,
+      explanation: String
+    }],
     supportingFindings: [{ type: String }],
     contradictingFindings: [{ type: String }],
     citedEvidenceIds: [{ type: String }],
