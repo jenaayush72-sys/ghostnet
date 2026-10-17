@@ -1,0 +1,30 @@
+[
+  {
+    "evidenceId": "EVD-DEMO-02",
+    "caseId": "CASE-DEMO-01",
+    "claimId": "CLM-01",
+    "sourceTitle": "HTML Living Standard: Timers & Event Loop Speciﬁcation",
+    "sourceURL": "https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html",
+    "sourceDomain": "html.spec.whatwg.org",
+    "excerpt": "The setTimeout method queues a task to run the timer callbacks after the specified delay. If the nesting level is greater than 5 and timeout is less than 4, timeout is clamped to 4ms. The task queue cannot preempt running execution contexts on the JavaScript call stack.",
+    "publishedAt": "2024-01-15",
+    "retrievedAt": "2026-10-17T09:00:00.000Z",
+    "evidenceDirection": "contradicts",
+    "sourceType": "code_spec",
+    "retrievalStatus": "verified"
+  },
+  {
+    "evidenceId": "EVD-003",
+    "caseId": "CASE-AB0678",
+    "claimId": "CLM-01",
+    "sourceTitle": "Python Design and History FAQ - List Implementation",
+    "sourceURL": "https://docs.python.org/3/faq/design.html#how-are-lists-implemented-in-cpython",
+    "sourceDomain": "docs.python.org",
+    "excerpt": "CPython's lists are really variable-length arrays, not Lisp-style linked lists. The implementation uses a contiguous array of references to other objects, and keeps a pointer to this array and the array's length in a list head structure.",
+    "publishedAt": "2024-02-15",
+    "retrievedAt": "2026-10-17T09:20:00.000Z",
+    "evidenceDirection": "supports",
+    "sourceType": "official_doc",
+    "retrievalStatus": "verified"
+  }
+]

@@ -1,0 +1,281 @@
+[
+  {
+    "caseId": "CASE-DEMO-01",
+    "title": "setTimeout(fn, 0) Execution Timing in JavaScript Call Stack",
+    "originalClaim": "In JavaScript, setTimeout(fn, 0) executes immediately before any other code in the call stack runs.",
+    "category": "programming",
+    "status": "completed",
+    "currentStage": "completed",
+    "evidenceReferences": [
+      "EVD-DEMO-01",
+      "EVD-DEMO-02"
+    ],
+    "agentResults": {
+      "ghost": {
+        "adversarialArgument": "Modern V8 optimization treats 0ms timeouts as an immediate zero-cycle push directly onto the call stack before standard deferred microtasks, meaning synchronous loops are preempted if the timer fires in 0 ticks."
+      },
+      "prosecutor": {
+        "objections": [
+          {
+            "statement": "setTimeout(fn, 0) preempts synchronous frames on the call stack",
+            "objection": "Violates the foundational JavaScript run-to-completion invariant.",
+            "reasoning": "Event loop macrotasks cannot preempt the currently executing synchronous stack.",
+            "requiredEvidence": "MDN Event Loop documentation and WHATWG HTML Timer Specification.",
+            "severity": "HIGH"
+          }
+        ]
+      },
+      "defense": {
+        "counterarguments": [
+          {
+            "objectionTarget": "Preempting synchronous execution",
+            "defenseArgument": "From the perspective of asynchronous scheduling, a 0ms timer executes in the earliest possible macrotask cycle, which intuitive explanations colloquially characterize as 'as soon as possible'.",
+            "conditionsWhereTrue": "True only in comparison to timers with non-zero delays (>0ms)."
+          }
+        ]
+      },
+      "factChecker": {
+        "claimAssessments": [
+          {
+            "claim": "setTimeout(fn, 0) executes immediately before any other code in the call stack runs.",
+            "supported": false,
+            "supportingEvidenceIds": [],
+            "contradictingEvidenceIds": [
+              "EVD-DEMO-01",
+              "EVD-DEMO-02"
+            ],
+            "assessment": "Decisively refuted. MDN and WHATWG confirm timer callbacks are queued as macrotasks and can NEVER preempt synchronous code on the active call stack."
+          }
+        ]
+      },
+      "judge": {
+        "verdict": "Refuted",
+        "takeaway": "In JavaScript, setTimeout(fn, 0) never runs immediately; it waits until all synchronous code in the call stack finishes first.",
+        "summary": "The court finds the claim FALSE. setTimeout(fn, 0) does not execute immediately and cannot preempt code in the active call stack.",
+        "reasoning": "Primary specifications from WHATWG and MDN decisively prove that setTimeout schedules a task on the macrotask queue. By architectural definition, queued tasks are only processed after the call stack has completely cleared and microtasks have executed.",
+        "truthBreakdown": [
+          {
+            "premise": "setTimeout executes immediately upon registration",
+            "status": "FALSE",
+            "explanation": "Timer callbacks are queued and deferred until the call stack clears."
+          },
+          {
+            "premise": "0ms delay is clamped and queued as a macrotask",
+            "status": "TRUE",
+            "explanation": "The WHATWG HTML specification requires callbacks to be queued in a task queue."
+          }
+        ],
+        "supportingFindings": [],
+        "contradictingFindings": [
+          "WHATWG Living Standard confirms timer tasks cannot preempt running execution contexts.",
+          "MDN Event Loop documentation explicitly refutes immediate synchronous execution."
+        ],
+        "citedEvidenceIds": [
+          "EVD-DEMO-01",
+          "EVD-DEMO-02"
+        ]
+      }
+    },
+    "verdict": {
+      "verdict": "Refuted",
+      "takeaway": "In JavaScript, setTimeout(fn, 0) never runs immediately; it waits until all synchronous code in the call stack finishes first.",
+      "summary": "The court finds the claim FALSE. setTimeout(fn, 0) does not execute immediately and cannot preempt code in the active call stack.",
+      "reasoning": "Primary specifications from WHATWG and MDN decisively prove that setTimeout schedules a task on the macrotask queue. By architectural definition, queued tasks are only processed after the call stack has completely cleared and microtasks have executed.",
+      "truthBreakdown": [
+        {
+          "premise": "setTimeout executes immediately upon registration",
+          "status": "FALSE",
+          "explanation": "Timer callbacks are queued and deferred until the call stack clears."
+        },
+        {
+          "premise": "0ms delay is clamped and queued as a macrotask",
+          "status": "TRUE",
+          "explanation": "The WHATWG HTML specification requires callbacks to be queued in a task queue."
+        }
+      ],
+      "supportingFindings": [],
+      "contradictingFindings": [
+        "WHATWG Living Standard confirms timer tasks cannot preempt running execution contexts.",
+        "MDN Event Loop documentation explicitly refutes immediate synchronous execution."
+      ],
+      "citedEvidenceIds": [
+        "EVD-DEMO-01",
+        "EVD-DEMO-02"
+      ]
+    },
+    "createdAt": "2026-10-17T09:00:00.000Z",
+    "completedAt": "2026-10-17T09:00:05.000Z"
+  },
+  {
+    "caseId": "CASE-AB0678",
+    "title": "Python lists are implemented as dynamically sized arrays in CPython",
+    "originalClaim": "Python lists are implemented as dynamically sized arrays in CPython",
+    "category": "programming",
+    "status": "completed",
+    "currentStage": "completed",
+    "evidenceReferences": [
+      "EVD-001",
+      "EVD-002",
+      "EVD-003"
+    ],
+    "agentResults": {
+      "ghost": {
+        "agentName": "Ghost Agent",
+        "adversarialArgument": "While Python lists behave like resizable arrays to the developer, internal memory layouts in high-level managed runtimes often decouple contiguous allocation from element storage. In CPython, lists store references (PyObject* pointers) rather than raw inline values, and alternative interpreters like PyPy or Jython utilize entirely distinct data structures."
+      },
+      "prosecutor": {
+        "agentName": "Prosecutor Agent (Sarvam AI)",
+        "objections": [
+          {
+            "statement": "Python lists store objects contiguously in memory",
+            "objection": "False - Python lists store references (pointers) to objects, not the objects themselves.",
+            "reasoning": "Python's object model requires each element to be a pointer to a PyObject allocated on the heap.",
+            "requiredEvidence": "CPython list implementation source code (listobject.c).",
+            "severity": "HIGH"
+          },
+          {
+            "statement": "All Python implementations use a dynamic array for lists",
+            "objection": "Overgeneralization beyond CPython scope.",
+            "reasoning": "Jython and PyPy implement lists using differing underlying data structures.",
+            "requiredEvidence": "Alternative Python interpreter specifications.",
+            "severity": "MEDIUM"
+          }
+        ]
+      },
+      "defense": {
+        "agentName": "Defense Agent (Groq)",
+        "counterarguments": [
+          {
+            "objectionTarget": "Python lists store references, not raw values",
+            "defenseArgument": "In computer science and C systems programming, an array of pointers (PyObject**) that dynamically resizes via realloc is the textbook definition of a dynamically sized array.",
+            "conditionsWhereTrue": "Valid in CPython where PyListObject.ob_item is a contiguous array of pointers."
+          },
+          {
+            "objectionTarget": "Generalization across interpreters",
+            "defenseArgument": "The original claim explicitly restricted its scope to CPython, making alternative interpreter differences moot.",
+            "conditionsWhereTrue": "Valid when evaluating CPython specifically."
+          }
+        ]
+      },
+      "factChecker": {
+        "agentName": "Fact-Checker Agent (Sarvam AI)",
+        "claimAssessments": [
+          {
+            "claim": "Python lists are implemented as dynamically sized arrays in CPython",
+            "supported": true,
+            "supportingEvidenceIds": [
+              "EVD-001",
+              "EVD-002"
+            ],
+            "contradictingEvidenceIds": [],
+            "assessment": "Verified against official Python documentation and CPython C source code: PyListObject is implemented as a contiguous resizable array of PyObject pointers."
+          }
+        ]
+      },
+      "judge": {
+        "agentName": "Gemma 4 Judge",
+        "verdict": "Supported",
+        "takeaway": "In CPython, a list is a dynamically-sized array of pointers to objects.",
+        "summary": "The court confirms the claim is accurate: CPython's list is internally built as a dynamically resizable array of object references (PyObject* pointers).",
+        "reasoning": "The court reviewed CPython source specifications for PyListObject. The structure maintains a contiguous array of pointers that resizes with an over-allocation growth factor. Because the claim explicitly targets CPython, objections regarding alternative runtimes or pointer storage do not invalidate the dynamic array classification.",
+        "truthBreakdown": [
+          {
+            "premise": "CPython implements list objects as a dynamic array",
+            "status": "TRUE",
+            "explanation": "CPython's PyListObject manages a resizable contiguous array (ob_item) via memory reallocation."
+          },
+          {
+            "premise": "The array stores references to objects rather than raw inline bytes",
+            "status": "TRUE",
+            "explanation": "Each slot holds a PyObject* pointer, satisfying the standard managed language definition of a dynamic array."
+          },
+          {
+            "premise": "The claim applies to all Python interpreters universally",
+            "status": "FALSE",
+            "explanation": "The claim explicitly narrowed its scope to CPython, where this dynamic array architecture is standard."
+          }
+        ],
+        "supportingFindings": [
+          "CPython's PyListObject manages a contiguous C array of pointers (PyObject**) that resizes dynamically.",
+          "Dynamic arrays traditionally store fixed-size references to objects in high-level managed languages, satisfying the definition of a dynamically sized array.",
+          "The claim explicitly narrowed its scope to CPython, neutralizing objections concerning Jython or PyPy."
+        ],
+        "contradictingFindings": [],
+        "citedEvidenceIds": [
+          "EVD-001",
+          "EVD-002"
+        ]
+      }
+    },
+    "verdict": {
+      "verdict": "Supported",
+      "takeaway": "In CPython, a list is a dynamically-sized array of pointers to objects.",
+      "summary": "The court confirms the claim is accurate: CPython's list is internally built as a dynamically resizable array of object references (PyObject* pointers).",
+      "reasoning": "The court reviewed CPython source specifications for PyListObject. The structure maintains a contiguous array of pointers that resizes with an over-allocation growth factor. Because the claim explicitly targets CPython, objections regarding alternative runtimes or pointer storage do not invalidate the dynamic array classification.",
+      "truthBreakdown": [
+        {
+          "premise": "CPython implements list objects as a dynamic array",
+          "status": "TRUE",
+          "explanation": "CPython's PyListObject manages a resizable contiguous array (ob_item) via memory reallocation."
+        },
+        {
+          "premise": "The array stores references to objects rather than raw inline bytes",
+          "status": "TRUE",
+          "explanation": "Each slot holds a PyObject* pointer, satisfying the standard managed language definition of a dynamic array."
+        },
+        {
+          "premise": "The claim applies to all Python interpreters universally",
+          "status": "FALSE",
+          "explanation": "The claim explicitly narrowed its scope to CPython, where this dynamic array architecture is standard."
+        }
+      ],
+      "supportingFindings": [
+        "CPython's PyListObject manages a contiguous C array of pointers (PyObject**) that resizes dynamically.",
+        "Dynamic arrays traditionally store fixed-size references to objects in high-level managed languages, satisfying the definition of a dynamically sized array.",
+        "The claim explicitly narrowed its scope to CPython, neutralizing objections concerning Jython or PyPy."
+      ],
+      "contradictingFindings": [],
+      "citedEvidenceIds": [
+        "EVD-001",
+        "EVD-002"
+      ]
+    },
+    "createdAt": "2026-10-17T09:20:00.000Z",
+    "completedAt": "2026-10-17T09:20:45.000Z"
+  },
+  {
+    "caseId": "CASE-3B8FE7",
+    "title": "CSS flexbox justify-content aligns items along the primary a...",
+    "originalClaim": "CSS flexbox justify-content aligns items along the primary axis.",
+    "category": "programming",
+    "context": "",
+    "sourceUrl": "",
+    "status": "in_progress",
+    "currentStage": "ghost_analysis",
+    "agentResults": {},
+    "investigationEvents": [
+      {
+        "eventId": "EVT-1792231356070-487",
+        "stage": "created",
+        "agentName": "Courtroom Clerk",
+        "eventType": "CASE_EMPANELLED",
+        "content": "Case empanelled. Claim entered into court docket: \"CSS flexbox justify-content aligns items along the primary axis.\". Initiating multi-agent adversarial inquiry.",
+        "data": {},
+        "timestamp": "2026-10-17T10:02:36.070Z"
+      },
+      {
+        "eventId": "EVT-1792231356081-314",
+        "stage": "ghost_analysis",
+        "agentName": "Ghost Agent",
+        "eventType": "STAGE_STARTED",
+        "content": "Ghost Agent is formulating a clever counter-argument to test the claim...",
+        "data": {},
+        "timestamp": "2026-10-17T10:02:36.081Z"
+      }
+    ],
+    "evidenceReferences": [],
+    "createdAt": "2026-10-17T10:02:35.985Z",
+    "updatedAt": "2026-10-17T10:02:36.077Z",
+    "verdict": null
+  }
+]

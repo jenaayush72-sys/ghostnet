@@ -60,14 +60,18 @@ export const Dashboard: React.FC = () => {
 
   const getVerdictBadge = (verdict?: string | null) => {
     switch (verdict) {
+      case 'Supported':
       case 'TRUE':
-        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#56b29e] text-[#1d1b18] border border-[#1d1b18]">TRUE</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#56b29e] text-[#1d1b18] border border-[#1d1b18]">SUPPORTED</span>;
+      case 'Refuted':
       case 'FALSE':
-        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#e5452f] text-white border border-[#1d1b18]">FALSE</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#e5452f] text-white border border-[#1d1b18]">REFUTED</span>;
+      case 'Mixed':
       case 'PARTIALLY TRUE':
-        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#f8c33c] text-[#1d1b18] border border-[#1d1b18]">PARTIALLY TRUE</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#f8c33c] text-[#1d1b18] border border-[#1d1b18]">MIXED</span>;
       case 'MISLEADING':
         return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#f47a22] text-[#fff] border border-[#1d1b18]">MISLEADING</span>;
+      case 'Insufficient Evidence':
       case 'INSUFFICIENT EVIDENCE':
         return <span className="px-3 py-1 rounded-full text-xs font-brand font-black bg-[#7a8fd8] text-[#1d1b18] border border-[#1d1b18]">INSUFFICIENT</span>;
       default:

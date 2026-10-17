@@ -19,7 +19,10 @@ export async function runEvidenceAgent({ caseId, claim, category = 'general' }) 
     const retrieved = await searchService.searchEvidence({ claim: query, category, claimId });
 
     for (const item of retrieved) {
-      const evidenceId = `EVD-${String(allEvidence.length + 1).padStart(3, '0')}`;
+      const caseSuffix = (caseId || '').replace(/^CASE-?/i, '');
+      const evidenceId = caseSuffix
+        ? `EVD-${caseSuffix}-${String(allEvidence.length + 1).padStart(2, '0')}`
+        : `EVD-${String(allEvidence.length + 1).padStart(3, '0')}`;
       const record = {
         evidenceId,
         caseId,

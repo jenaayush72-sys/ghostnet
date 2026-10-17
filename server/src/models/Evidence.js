@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { loadCollection, saveCollection } from '../db/fileStorage.js';
 
 const evidenceSchema = new mongoose.Schema({
   evidenceId: { type: String, required: true, unique: true, index: true },
@@ -31,17 +32,27 @@ const evidenceSchema = new mongoose.Schema({
 
 const MongooseEvidenceModel = mongoose.model('Evidence', evidenceSchema);
 
-const memoryEvidence = new Map();
+let memoryEvidence = loadCollection('evidence.json');
+
+function getStore() {
+  if (memoryEvidence.size === 0) {
+    const fresh = loadCollection('evidence.json');
+    if (fresh.size > 0) memoryEvidence = fresh;
+  }
+  return memoryEvidence;
+}
 
 export const EvidenceRepository = {
   async create(data) {
+    const store = getStore();
     if (mongoose.connection.readyState === 1) {
       try {
         const doc = await MongooseEvidenceModel.create(data);
-        memoryEvidence.set(data.evidenceId, doc.toObject());
+        store.set(data.evidenceId, doc.toObject());
+        saveCollection('evidence.json', store);
         return doc.toObject();
       } catch (err) {
-        console.warn(`[EvidenceRepo] MongoDB save error, falling back to memory: ${err.message}`);
+        console.warn(`[EvidenceRepo] MongoDB save error, falling back to disk/memory: ${err.message}`);
       }
     }
     const doc = {
@@ -50,7 +61,8 @@ export const EvidenceRepository = {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    memoryEvidence.set(data.evidenceId, doc);
+    store.set(data.evidenceId, doc);
+    saveCollection('evidence.json', store);
     return doc;
   },
 
@@ -72,7 +84,7 @@ export const EvidenceRepository = {
         console.warn(`[EvidenceRepo] MongoDB find error: ${err.message}`);
       }
     }
-    return Array.from(memoryEvidence.values()).filter(e => e.caseId === caseId);
+    return Array.from(getStore().values()).filter(e => e.caseId === caseId);
   },
 
   async find(query = {}, options = {}) {
@@ -89,7 +101,7 @@ export const EvidenceRepository = {
         console.warn(`[EvidenceRepo] MongoDB find error: ${err.message}`);
       }
     }
-    let list = Array.from(memoryEvidence.values());
+    let list = Array.from(getStore().values());
     if (query.caseId) list = list.filter(e => e.caseId === query.caseId);
     if (query.evidenceDirection) list = list.filter(e => e.evidenceDirection === query.evidenceDirection);
     if (query.retrievalStatus) list = list.filter(e => e.retrievalStatus === query.retrievalStatus);
@@ -105,7 +117,7 @@ export const EvidenceRepository = {
         console.warn(`[EvidenceRepo] MongoDB count error: ${err.message}`);
       }
     }
-    let list = Array.from(memoryEvidence.values());
+    let list = Array.from(getStore().values());
     if (query.caseId) list = list.filter(e => e.caseId === query.caseId);
     if (query.evidenceDirection) list = list.filter(e => e.evidenceDirection === query.evidenceDirection);
     return list.length;

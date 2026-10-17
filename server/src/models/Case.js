@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { loadCollection, saveCollection } from '../db/fileStorage.js';
 
 const investigationEventSchema = new mongoose.Schema({
   eventId: { type: String, required: true },
@@ -89,18 +90,28 @@ const caseSchema = new mongoose.Schema({
 
 const MongooseCaseModel = mongoose.model('Case', caseSchema);
 
-// In-memory fallback repository to support environments where MongoDB daemon is not active
-const memoryCases = new Map();
+// Persistent repository to guarantee all claims and trials survive server restarts
+let memoryCases = loadCollection('cases.json');
+
+function getStore() {
+  if (memoryCases.size === 0) {
+    const fresh = loadCollection('cases.json');
+    if (fresh.size > 0) memoryCases = fresh;
+  }
+  return memoryCases;
+}
 
 export const CaseRepository = {
   async create(data) {
+    const store = getStore();
     if (mongoose.connection.readyState === 1) {
       try {
         const doc = await MongooseCaseModel.create(data);
-        memoryCases.set(data.caseId, doc.toObject());
+        store.set(data.caseId, doc.toObject());
+        saveCollection('cases.json', store);
         return doc.toObject();
       } catch (err) {
-        console.warn(`[CaseRepo] MongoDB save error, falling back to memory: ${err.message}`);
+        console.warn(`[CaseRepo] MongoDB save error, falling back to disk/memory: ${err.message}`);
       }
     }
     const doc = {
@@ -112,7 +123,8 @@ export const CaseRepository = {
       agentResults: data.agentResults || {},
       verdict: data.verdict || null
     };
-    memoryCases.set(data.caseId, doc);
+    store.set(data.caseId, doc);
+    saveCollection('cases.json', store);
     return doc;
   },
 
@@ -132,11 +144,13 @@ export const CaseRepository = {
         console.warn(`[CaseRepo] MongoDB find error: ${err.message}`);
       }
     }
-    return memoryCases.get(cleanId) || memoryCases.get(hyphenId) || memoryCases.get(spaceId) || null;
+    const store = getStore();
+    return store.get(cleanId) || store.get(hyphenId) || store.get(spaceId) || null;
   },
 
   async updateByCaseId(caseId, updates) {
     updates.updatedAt = new Date();
+    const store = getStore();
     if (mongoose.connection.readyState === 1) {
       try {
         const doc = await MongooseCaseModel.findOneAndUpdate(
@@ -145,14 +159,15 @@ export const CaseRepository = {
           { new: true }
         ).lean();
         if (doc) {
-          memoryCases.set(caseId, doc);
+          store.set(caseId, doc);
+          saveCollection('cases.json', store);
           return doc;
         }
       } catch (err) {
         console.warn(`[CaseRepo] MongoDB update error: ${err.message}`);
       }
     }
-    const existing = memoryCases.get(caseId);
+    const existing = store.get(caseId);
     if (!existing) return null;
     const merged = { ...existing };
     for (const [key, value] of Object.entries(updates)) {
@@ -168,7 +183,8 @@ export const CaseRepository = {
         merged[key] = value;
       }
     }
-    memoryCases.set(caseId, merged);
+    store.set(caseId, merged);
+    saveCollection('cases.json', store);
     return merged;
   },
 
@@ -187,11 +203,13 @@ export const CaseRepository = {
         console.warn(`[CaseRepo] MongoDB addEvent error: ${err.message}`);
       }
     }
-    const existing = memoryCases.get(caseId);
+    const store = getStore();
+    const existing = store.get(caseId);
     if (existing) {
       if (!existing.investigationEvents) existing.investigationEvents = [];
       existing.investigationEvents.push(eventWithTimestamp);
-      memoryCases.set(caseId, existing);
+      store.set(caseId, existing);
+      saveCollection('cases.json', store);
     }
     return eventWithTimestamp;
   },
@@ -210,7 +228,7 @@ export const CaseRepository = {
         console.warn(`[CaseRepo] MongoDB find error: ${err.message}`);
       }
     }
-    let list = Array.from(memoryCases.values());
+    let list = Array.from(getStore().values());
     if (query.status) {
       list = list.filter(c => c.status === query.status);
     }
@@ -232,7 +250,7 @@ export const CaseRepository = {
         console.warn(`[CaseRepo] MongoDB count error: ${err.message}`);
       }
     }
-    let list = Array.from(memoryCases.values());
+    let list = Array.from(getStore().values());
     if (query.status) list = list.filter(c => c.status === query.status);
     if (query.category) list = list.filter(c => c.category === query.category);
     if (query.verdict) list = list.filter(c => c.verdict?.verdict === query.verdict);
@@ -241,7 +259,11 @@ export const CaseRepository = {
 
   // Seed demo case for quick exploration
   seedDemoCase(demoData) {
-    memoryCases.set(demoData.caseId, demoData);
+    const store = getStore();
+    if (!store.has(demoData.caseId)) {
+      store.set(demoData.caseId, demoData);
+      saveCollection('cases.json', store);
+    }
   }
 };
 
