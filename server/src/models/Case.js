@@ -117,15 +117,22 @@ export const CaseRepository = {
   },
 
   async findOneByCaseId(caseId) {
+    if (!caseId) return null;
+    const cleanId = String(caseId).trim();
+    const hyphenId = cleanId.replace(/\s+/g, '-');
+    const spaceId = cleanId.replace(/-/g, ' ');
+
     if (mongoose.connection.readyState === 1) {
       try {
-        const doc = await MongooseCaseModel.findOne({ caseId }).lean();
+        const doc = await MongooseCaseModel.findOne({
+          caseId: { $in: [cleanId, hyphenId, spaceId] }
+        }).lean();
         if (doc) return doc;
       } catch (err) {
         console.warn(`[CaseRepo] MongoDB find error: ${err.message}`);
       }
     }
-    return memoryCases.get(caseId) || null;
+    return memoryCases.get(cleanId) || memoryCases.get(hyphenId) || memoryCases.get(spaceId) || null;
   },
 
   async updateByCaseId(caseId, updates) {

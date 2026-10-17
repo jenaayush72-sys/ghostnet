@@ -77,23 +77,98 @@ export const api = {
   },
 
   getExportUrl(caseId: string, format: 'json' | 'markdown' = 'json') {
-    return `${API_BASE_URL}/investigations/${caseId}/export?format=${format}`;
+    const cleanId = encodeURIComponent(String(caseId || '').trim().replace(/\s+/g, '-'));
+    return `/api/investigations/${cleanId}/export?format=${format}`;
   },
 
-  async downloadReport(caseId: string, format: 'json' | 'markdown' = 'json') {
-    const url = `${API_BASE_URL}/investigations/${caseId}/export?format=${format}`;
-    const res = await apiClient.get(url, { responseType: 'blob' });
-    const blob = new Blob([res.data], {
-      type: format === 'json' ? 'application/json' : 'text/markdown'
-    });
-    const downloadUrl = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = downloadUrl;
-    a.download = `GhostNet-Case-${caseId}-Report.${format === 'json' ? 'json' : 'md'}`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(downloadUrl);
+  async downloadReport(caseId: string, format: 'json' | 'markdown' = 'json', fallbackCaseData?: any) {
+    const rawId = String(caseId || '').trim();
+    const cleanId = encodeURIComponent(rawId.replace(/\s+/g, '-'));
+    const url = `/investigations/${cleanId}/export?format=${format}`;
+
+    try {
+      const res = await apiClient.get(url, { responseType: 'blob' });
+      const blob = new Blob([res.data], {
+        type: format === 'json' ? 'application/json' : 'text/markdown'
+      });
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `GhostNet-Case-${cleanId}-Report.${format === 'json' ? 'json' : 'md'}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (err: any) {
+      if (fallbackCaseData) {
+        let content = '';
+        if (format === 'json') {
+          content = JSON.stringify({
+            courtroom: 'GhostNet Autonomous Multi-Agent Courtroom',
+            judgeModel: 'Gemma 4 Judge',
+            exportedAt: new Date().toISOString(),
+            case: fallbackCaseData
+          }, null, 2);
+        } else {
+          const v = fallbackCaseData.verdict || {};
+          content = `# GhostNet AI Courtroom Investigation Report: ${fallbackCaseData.caseId || cleanId}
+**Indicted Claim**: "${fallbackCaseData.originalClaim || ''}"
+**Docket Title**: ${fallbackCaseData.title || ''}
+**Category**: ${fallbackCaseData.category || 'general'}
+**Status**: ${fallbackCaseData.status || 'completed'}
+**Empanelled At**: ${fallbackCaseData.createdAt || new Date().toISOString()}
+
+---
+
+## 1. JUDICIAL RULING (Gemma 4 Judge)
+- **Official Ruling**: **${v.verdict || 'PENDING'}**
+- **Takeaway**: ${v.takeaway || v.summary || 'N/A'}
+- **Executive Summary**: ${v.summary || 'No summary rendered.'}
+- **Judicial Synthesis & Reasoning**: ${v.reasoning || 'No reasoning rendered.'}
+
+---
+
+## 2. TRUTH BREAKDOWN
+${(v.truthBreakdown || []).map((t: any) => `- [${t.status}] ${t.premise}: ${t.explanation}`).join('\n') || 'None'}
+
+---
+
+## 3. CORROBORATING FINDINGS
+${(v.supportingFindings || []).map((f: string) => `- ${f}`).join('\n') || 'None'}
+
+---
+
+## 4. CONTRADICTIONS & LIMITATIONS
+${(v.contradictingFindings || []).map((f: string) => `- ${f}`).join('\n') || 'None'}
+
+---
+
+## 5. AGENT PLEADINGS & ARGUMENTS
+### Ghost Adversarial Premise:
+${fallbackCaseData.agentResults?.ghost?.adversarialArgument || 'N/A'}
+
+### Prosecution Objections:
+${(fallbackCaseData.agentResults?.prosecutor?.objections || []).map((o: any) => `- **${o.statement}**: ${o.objection} (${o.reasoning})`).join('\n') || 'None'}
+
+### Defense Counterarguments:
+${(fallbackCaseData.agentResults?.defense?.counterarguments || []).map((d: any) => `- **Defense**: ${d.defenseArgument} (Valid when: ${d.conditionsWhereTrue})`).join('\n') || 'None'}
+`;
+        }
+        const blob = new Blob([content], {
+          type: format === 'json' ? 'application/json' : 'text/markdown'
+        });
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `GhostNet-Case-${cleanId}-Report.${format === 'json' ? 'json' : 'md'}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(downloadUrl);
+        return;
+      }
+      throw err;
+    }
   },
 
   /**

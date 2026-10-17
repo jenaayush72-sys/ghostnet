@@ -109,7 +109,7 @@ export const VerdictBanner: React.FC<VerdictBannerProps> = ({
     if (!caseData?.caseId) return;
     setExportingFormat(format);
     try {
-      await api.downloadReport(caseData.caseId, format);
+      await api.downloadReport(caseData.caseId, format, caseData);
     } catch (err: any) {
       alert(`Export failed: ${err.message}`);
     } finally {
