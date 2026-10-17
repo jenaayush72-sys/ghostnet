@@ -88,7 +88,8 @@ const getAgentMeta = (agentName: string = '', eventType: string = '') => {
 };
 
 export const Courtroom: React.FC = () => {
-  const { caseId } = useParams<{ caseId: string }>();
+  const { caseId: rawCaseId } = useParams<{ caseId: string }>();
+  const caseId = rawCaseId ? rawCaseId.trim().replace(/\s+/g, '-') : '';
   const navigate = useNavigate();
 
   const [caseData, setCaseData] = useState<CaseData | null>(null);

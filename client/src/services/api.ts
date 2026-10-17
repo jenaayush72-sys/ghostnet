@@ -183,7 +183,8 @@ ${(fallbackCaseData.agentResults?.defense?.counterarguments || []).map((d: any) 
       onConnected?: () => void;
     }
   ) {
-    const url = `${API_BASE_URL}/investigations/${caseId}/events`;
+    const cleanId = String(caseId).trim().replace(/\s+/g, '-');
+    const url = `${API_BASE_URL}/investigations/${cleanId}/events`;
     const eventSource = new EventSource(url);
 
     eventSource.addEventListener('connected', () => {

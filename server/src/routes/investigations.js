@@ -166,15 +166,27 @@ router.get('/:caseId/events', async (req, res) => {
     }
   }
 
+  const canonicalId = caseDoc.caseId;
+
   // If already finished or failed, emit terminal state
   if (caseDoc.status === 'completed') {
-    res.write(`event: investigation_complete\ndata: ${JSON.stringify({ caseId, status: 'completed' })}\n\n`);
+    res.write(`event: investigation_complete\ndata: ${JSON.stringify({ caseId: canonicalId, status: 'completed' })}\n\n`);
   } else if (caseDoc.status === 'failed') {
     res.write(`event: investigation_error\ndata: ${JSON.stringify(caseDoc.errorDetails || { message: 'Case failed' })}\n\n`);
   }
 
   // Register with orchestrator for live events
-  orchestrator.registerSseClient(caseId, res);
+  orchestrator.registerSseClient(canonicalId, res);
+
+  // If case is in_progress or queued but not running in memory (e.g. after server reboot), auto-resume!
+  if (caseDoc.status === 'in_progress' || caseDoc.status === 'queued') {
+    if (!orchestrator.isInvestigationRunning(canonicalId)) {
+      console.log(`[Investigations] Auto-resuming uncompleted case ${canonicalId} in state "${caseDoc.status}"`);
+      orchestrator.runInvestigation(canonicalId).catch(err => {
+        console.error(`[Investigations] Auto-resume error for ${canonicalId}:`, err);
+      });
+    }
+  }
 });
 
 /**

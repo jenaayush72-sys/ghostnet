@@ -26,5 +26,37 @@
     "evidenceDirection": "supports",
     "sourceType": "official_doc",
     "retrievalStatus": "verified"
+  },
+  {
+    "evidenceId": "EVD-3B8FE7-01",
+    "caseId": "CASE-3B8FE7",
+    "claimId": "CLM-01",
+    "sourceTitle": "No Primary Index Match Found",
+    "sourceURL": "https://en.wikipedia.org",
+    "sourceDomain": "wikipedia.org",
+    "excerpt": "Direct search for query \"CSS flexbox justify-content aligns items along the primary axis.\" yielded no indexed encyclopedia records in the immediate search pass.",
+    "publishedAt": null,
+    "retrievedAt": "2026-10-17T10:14:16.953Z",
+    "evidenceDirection": "context",
+    "sourceType": "reputable_publication",
+    "retrievalStatus": "unavailable",
+    "createdAt": "2026-10-17T10:14:19.086Z",
+    "updatedAt": "2026-10-17T10:14:19.086Z"
+  },
+  {
+    "evidenceId": "EVD-3B8FE7-02",
+    "caseId": "CASE-3B8FE7",
+    "claimId": "CLM-02",
+    "sourceTitle": "No Primary Index Match Found",
+    "sourceURL": "https://en.wikipedia.org",
+    "sourceDomain": "wikipedia.org",
+    "excerpt": "Direct search for query \"CSS flexbox justify-content aligns items along the primary axis\" yielded no indexed encyclopedia records in the immediate search pass.",
+    "publishedAt": null,
+    "retrievedAt": "2026-10-17T10:14:18.262Z",
+    "evidenceDirection": "context",
+    "sourceType": "reputable_publication",
+    "retrievalStatus": "unavailable",
+    "createdAt": "2026-10-17T10:14:19.090Z",
+    "updatedAt": "2026-10-17T10:14:19.090Z"
   }
 ]

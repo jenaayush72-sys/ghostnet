@@ -47,10 +47,7 @@ export function saveCollection(filename, map) {
     ensureDataDir();
     const filePath = path.join(DATA_DIR, filename);
     const items = Array.from(map.values());
-    // Write atomically via temporary file to prevent corruption
-    const tempPath = `${filePath}.tmp`;
-    fs.writeFileSync(tempPath, JSON.stringify(items, null, 2), 'utf-8');
-    fs.renameSync(tempPath, filePath);
+    fs.writeFileSync(filePath, JSON.stringify(items, null, 2), 'utf-8');
   } catch (err) {
     console.error(`[FileStorage] Error saving ${filename}:`, err.message);
   }

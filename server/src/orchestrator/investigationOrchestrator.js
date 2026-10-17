@@ -7,34 +7,46 @@ import { runEvidenceAgent } from '../agents/evidenceAgent.js';
 import { runFactCheckerAgent } from '../agents/factCheckerAgent.js';
 import { runJudgeAgent } from '../agents/judgeAgent.js';
 
+function normalizeCaseId(id) {
+  return String(id || '').trim().replace(/\s+/g, '-');
+}
+
 class InvestigationOrchestrator {
   constructor() {
     // Map of caseId -> Set of response streams (Express res objects)
     this.sseClients = new Map();
+    this.runningInvestigations = new Set();
+  }
+
+  isInvestigationRunning(caseId) {
+    const key = normalizeCaseId(caseId);
+    return this.runningInvestigations.has(key);
   }
 
   // Register an SSE client for real-time streaming
   registerSseClient(caseId, res) {
-    if (!this.sseClients.has(caseId)) {
-      this.sseClients.set(caseId, new Set());
+    const key = normalizeCaseId(caseId);
+    if (!this.sseClients.has(key)) {
+      this.sseClients.set(key, new Set());
     }
-    const clients = this.sseClients.get(caseId);
+    const clients = this.sseClients.get(key);
     clients.add(res);
 
     // Send immediate initial handshake and heartbeat
-    res.write(`event: connected\ndata: ${JSON.stringify({ caseId, time: new Date() })}\n\n`);
+    res.write(`event: connected\ndata: ${JSON.stringify({ caseId: key, time: new Date() })}\n\n`);
 
     // Clean up when client disconnects
     res.on('close', () => {
       clients.delete(res);
       if (clients.size === 0) {
-        this.sseClients.delete(caseId);
+        this.sseClients.delete(key);
       }
     });
   }
 
   // Broadcast event to connected SSE clients and persist to DB
   async emitEvent(caseId, { stage, agentName, eventType, content, data = {} }) {
+    const key = normalizeCaseId(caseId);
     const event = {
       eventId: `EVT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       stage,
@@ -46,17 +58,17 @@ class InvestigationOrchestrator {
     };
 
     // 1. Persist to case in DB
-    await CaseRepository.addEvent(caseId, event);
+    await CaseRepository.addEvent(key, event);
 
     // 2. Stream to active SSE clients
-    const clients = this.sseClients.get(caseId);
+    const clients = this.sseClients.get(key);
     if (clients && clients.size > 0) {
       const payload = `event: investigation_event\ndata: ${JSON.stringify(event)}\n\n`;
       for (const res of clients) {
         try {
           res.write(payload);
         } catch (err) {
-          console.warn(`[Orchestrator] Error writing to client for case ${caseId}:`, err.message);
+          console.warn(`[Orchestrator] Error writing to client for case ${key}:`, err.message);
         }
       }
     }
@@ -66,7 +78,8 @@ class InvestigationOrchestrator {
 
   // Send heartbeat to prevent proxy timeouts
   sendHeartbeat(caseId) {
-    const clients = this.sseClients.get(caseId);
+    const key = normalizeCaseId(caseId);
+    const clients = this.sseClients.get(key);
     if (clients && clients.size > 0) {
       for (const res of clients) {
         try {
@@ -80,13 +93,21 @@ class InvestigationOrchestrator {
    * Main investigation runner: deterministic 7-stage workflow
    */
   async runInvestigation(caseId) {
-    const caseDoc = await CaseRepository.findOneByCaseId(caseId);
+    const key = normalizeCaseId(caseId);
+    if (this.runningInvestigations.has(key)) {
+      console.log(`[Orchestrator] Investigation ${key} already in flight, skipping duplicate concurrent run.`);
+      return await CaseRepository.findOneByCaseId(key);
+    }
+    this.runningInvestigations.add(key);
+
+    const caseDoc = await CaseRepository.findOneByCaseId(key);
     if (!caseDoc) {
-      throw new Error(`Case ${caseId} not found`);
+      this.runningInvestigations.delete(key);
+      throw new Error(`Case ${key} not found`);
     }
 
     // Heartbeat interval during long pipeline stages
-    const heartbeatTimer = setInterval(() => this.sendHeartbeat(caseId), 8000);
+    const heartbeatTimer = setInterval(() => this.sendHeartbeat(key), 8000);
 
     try {
       // Update status to in_progress
@@ -296,7 +317,7 @@ class InvestigationOrchestrator {
       });
 
       // STAGE 7: COMPLETION
-      const completedDoc = await CaseRepository.updateByCaseId(caseId, {
+      const completedDoc = await CaseRepository.updateByCaseId(key, {
         status: 'completed',
         currentStage: 'completed',
         completedAt: new Date(),
@@ -304,40 +325,40 @@ class InvestigationOrchestrator {
         verdict: judgeResult
       });
 
-      await this.emitEvent(caseId, {
+      await this.emitEvent(key, {
         stage: 'completed',
         agentName: 'Courtroom Clerk',
         eventType: 'CASE_CLOSED',
-        content: `Case ${caseId} proceedings concluded and entered into legal precedent vault.`,
+        content: `Case ${key} proceedings concluded and entered into legal precedent vault.`,
         data: { verdict: judgeResult.verdict }
       });
 
       // Broadcast completion signal
-      const clients = this.sseClients.get(caseId);
+      const clients = this.sseClients.get(key);
       if (clients) {
         for (const res of clients) {
           try {
-            res.write(`event: investigation_complete\ndata: ${JSON.stringify({ caseId, status: 'completed' })}\n\n`);
+            res.write(`event: investigation_complete\ndata: ${JSON.stringify({ caseId: key, status: 'completed' })}\n\n`);
           } catch {}
         }
       }
 
       return completedDoc;
     } catch (err) {
-      console.error(`[Orchestrator] Error running investigation for case ${caseId}:`, err);
+      console.error(`[Orchestrator] Error running investigation for case ${key}:`, err);
       const errorDetails = {
         message: err.message,
         stage: caseDoc.currentStage,
         timestamp: new Date()
       };
 
-      await CaseRepository.updateByCaseId(caseId, {
+      await CaseRepository.updateByCaseId(key, {
         status: 'failed',
         currentStage: 'failed',
         errorDetails
       });
 
-      await this.emitEvent(caseId, {
+      await this.emitEvent(key, {
         stage: 'failed',
         agentName: 'Courtroom Clerk',
         eventType: 'INVESTIGATION_FAILED',
@@ -346,7 +367,7 @@ class InvestigationOrchestrator {
       });
 
       // Send error signal to SSE
-      const clients = this.sseClients.get(caseId);
+      const clients = this.sseClients.get(key);
       if (clients) {
         for (const res of clients) {
           try {
@@ -357,6 +378,7 @@ class InvestigationOrchestrator {
 
       throw err;
     } finally {
+      this.runningInvestigations.delete(key);
       clearInterval(heartbeatTimer);
     }
   }
