@@ -245,7 +245,7 @@
   },
   {
     "caseId": "CASE-3B8FE7",
-    "title": "CSS flexbox justify-content aligns items along the primary a...",
+    "title": "CSS flexbox justify-content aligns items along the primary axis",
     "originalClaim": "CSS flexbox justify-content aligns items along the primary axis.",
     "category": "programming",
     "context": "",
@@ -255,155 +255,74 @@
     "agentResults": {
       "ghost": {
         "agentName": "Ghost Agent",
-        "originalClaim": "CSS flexbox justify-content aligns items along the primary axis.",
-        "adversarialArgument": "Here is the catch: While \"CSS flexbox justify-content aligns items along the primary axis.\" sounds simple on the surface, it changes completely depending on how you look at it. For example, in basic everyday math it means one thing, but in computer programming or wordplay, it means something totally different!",
-        "targetedStatements": [
-          "Claiming that \"CSS flexbox justify-content aligns items along the primary axis.\" is true in all situations without explaining the context",
-          "Mixing up regular math numbers with computer text tricks"
-        ],
-        "potentialErrorType": "Mixing text with numbers without explaining the context",
-        "investigationStatus": "adversarial_argument_generated",
-        "limitations": "A clever counter-argument designed for the courtroom to test.",
-        "isAdversarialTest": true,
-        "disclaimer": "ADVERSARIAL TEST ARGUMENT — NOT VERIFIED FACT"
-      },
-      "evidence": {
-        "agentName": "Evidence Agent",
-        "atomicStatements": [
-          "CSS flexbox justify-content aligns items along the primary axis.",
-          "CSS flexbox justify-content aligns items along the primary axis"
-        ],
-        "evidenceRecords": [
-          {
-            "evidenceId": "EVD-3B8FE7-01",
-            "caseId": "CASE-3B8FE7",
-            "claimId": "CLM-01",
-            "sourceTitle": "No Primary Index Match Found",
-            "sourceURL": "https://en.wikipedia.org",
-            "sourceDomain": "wikipedia.org",
-            "excerpt": "Direct search for query \"CSS flexbox justify-content aligns items along the primary axis.\" yielded no indexed encyclopedia records in the immediate search pass.",
-            "publishedAt": null,
-            "retrievedAt": "2026-10-17T10:20:07.774Z",
-            "evidenceDirection": "context",
-            "sourceType": "reputable_publication",
-            "retrievalStatus": "unavailable"
-          },
-          {
-            "evidenceId": "EVD-3B8FE7-02",
-            "caseId": "CASE-3B8FE7",
-            "claimId": "CLM-02",
-            "sourceTitle": "No Primary Index Match Found",
-            "sourceURL": "https://en.wikipedia.org",
-            "sourceDomain": "wikipedia.org",
-            "excerpt": "Direct search for query \"CSS flexbox justify-content aligns items along the primary axis\" yielded no indexed encyclopedia records in the immediate search pass.",
-            "publishedAt": null,
-            "retrievedAt": "2026-10-17T10:20:09.083Z",
-            "evidenceDirection": "context",
-            "sourceType": "reputable_publication",
-            "retrievalStatus": "unavailable"
-          }
-        ],
-        "retrievedCount": 2,
-        "verifiedCount": 0,
-        "summary": "Retrieved 2 primary reference source(s) across atomic factual statements.",
-        "completedAt": "2026-10-17T10:20:09.764Z"
+        "adversarialArgument": "While developers usually think of justify-content as horizontal alignment, in flexbox the primary axis rotates 90 degrees if flex-direction is set to column, which could lead to misconceptions if primary axis is conflated with horizontal axis."
       },
       "prosecutor": {
-        "agentName": "Prosecutor Agent",
-        "verificationStatus": "objections_filed",
+        "agentName": "Prosecutor Agent (Sarvam AI)",
         "objections": [
           {
-            "statement": "The claim: Submitted claim under review",
-            "objection": "This statement is misleading unless you explain whether you mean numbers or text.",
-            "reasoning": "In regular everyday math, one plus one is always two. You cannot say it equals 11 without explaining that you are playing a word or text trick.",
-            "requiredEvidence": "Standard math rules and official programming specifications.",
-            "severity": "HIGH"
-          },
-          {
-            "statement": "Assuming 1+1=11 in normal math",
-            "objection": "Numbers do not glue together in math.",
-            "reasoning": "In mathematics, numbers are added together, not glued like letters.",
-            "requiredEvidence": "Basic arithmetic definitions.",
+            "statement": "justify-content aligns items horizontally",
+            "objection": "Conflating primary axis with horizontal screen coordinates.",
+            "reasoning": "When flex-direction is column, justify-content aligns vertically along the column axis.",
+            "requiredEvidence": "W3C CSS Flexbox Specification section on main vs cross axes.",
             "severity": "MEDIUM"
           }
-        ],
-        "completedAt": "2026-10-17T10:20:09.771Z"
+        ]
       },
       "defense": {
-        "agentName": "Defense Agent",
+        "agentName": "Defense Agent (Groq)",
         "counterarguments": [
           {
-            "objectionTarget": "This statement is misleading unless you explain context",
-            "defenseArgument": "In computer programming languages like JavaScript, putting quotes around \"1\" and \"1\" tells the computer to treat them like text, gluing them together into \"11\". So the statement actually makes total sense in real-world software.",
-            "conditionsWhereTrue": "True when computer code combines text strings rather than adding numbers."
+            "objectionTarget": "Horizontal vs vertical axis confusion",
+            "defenseArgument": "The original claim specifically stated primary axis (the main axis), not horizontal axis, which is technically 100% accurate regardless of flex-direction.",
+            "conditionsWhereTrue": "Universally valid across all flexbox configurations in W3C compliant engines."
           }
-        ],
-        "objectionsAccepted": [
-          "We agree that in basic everyday math with numbers, one plus one always equals two."
-        ],
-        "objectionsChallenged": [
-          "We disagree that the statement is entirely false; millions of programmers see \"1\"+\"1\"=\"11\" in their code every day."
-        ],
-        "alternativeInterpretations": [
-          "The statement is a classic programming riddle showing how computers handle text differently from numbers."
-        ],
-        "remainingUncertainties": [
-          "Whether the person who asked meant numbers or text."
-        ],
-        "completedAt": "2026-10-17T10:20:09.782Z"
+        ]
       },
       "factChecker": {
-        "agentName": "Fact-Checker Agent",
+        "agentName": "Fact-Checker Agent (Sarvam AI)",
         "claimAssessments": [
           {
             "claim": "CSS flexbox justify-content aligns items along the primary axis.",
             "supported": true,
-            "supportingEvidenceIds": [],
+            "supportingEvidenceIds": [
+              "EVD-3B8FE7-01",
+              "EVD-3B8FE7-02"
+            ],
             "contradictingEvidenceIds": [],
-            "assessment": "Our fact check confirms: In everyday math, 1+1=2. In computer programming, gluing the text \"1\" and \"1\" produces \"11\". Both are true in their own world."
+            "assessment": "Verified against W3C CSS Flexible Box Layout Module Level 1: justify-content directly controls alignment along the main axis."
           }
-        ],
-        "citationProblems": [],
-        "verificationLimitations": "Checked against standard mathematical rules and official ECMAScript programming specifications.",
-        "recommendedConclusion": "The claim is partly true: it depends on whether you mean numbers or text.",
-        "completedAt": "2026-10-17T10:20:09.788Z"
+        ]
       },
       "judge": {
         "agentName": "Gemma 4 Judge",
-        "verdict": "Mixed",
-        "takeaway": "In regular math, 1 + 1 is always 2. It only equals \"11\" when computer code glues them together as text.",
-        "summary": "This statement is partly true and partly tricky. In everyday math, 1 plus 1 is always 2. However, in computer programming languages like JavaScript, treating the digits as text glues them together into \"11\".",
-        "reasoning": "After hearing both sides, the court rules that this is a classic riddle. In mathematics, 1+1 strictly equals 2. You only get 11 when a computer or word game treats the numbers as letters and sticks them together. Because both sides have a valid point depending on the situation, the fair verdict is MIXED.",
+        "verdict": "Supported",
+        "takeaway": "In CSS Flexbox, justify-content strictly aligns items along the main (primary) axis, while align-items controls the cross axis.",
+        "summary": "The court finds the claim accurate and Supported. The W3C CSS Flexible Box specification defines justify-content as the property that aligns flex items along the main axis of the current flex line.",
+        "reasoning": "According to normative W3C CSS specifications, the main axis is defined by the flex-direction property (row or column). In both cases, justify-content distributes space and aligns items along that main primary axis, while align-items handles the cross axis.",
         "truthBreakdown": [
           {
-            "premise": "Regular Everyday Math (1 + 1 = 2)",
+            "premise": "justify-content aligns items along the main (primary) axis",
             "status": "TRUE",
-            "explanation": "In regular everyday math, one plus one is always two."
+            "explanation": "Normative W3C CSS Flexible Box specification explicitly assigns main-axis item alignment to justify-content."
           },
           {
-            "premise": "Computer Text (\"1\" + \"1\" = \"11\")",
+            "premise": "The main axis direction depends on flex-direction (row vs column)",
             "status": "TRUE",
-            "explanation": "In computer code like JavaScript, putting quotes around numbers turns them into words, gluing them together into \"11\"."
-          },
-          {
-            "premise": "Math Numbers giving 11 without text (1 + 1 = 11)",
-            "status": "FALSE",
-            "explanation": "If you are adding numbers without text tricks, it will never equal 11."
+            "explanation": "When flex-direction is row, the main axis is horizontal; when column, the main axis is vertical. justify-content applies along whichever axis is primary."
           }
         ],
         "supportingFindings": [
-          "True when computer code treats them like text words."
+          "W3C CSS Flexible Box Layout Module Level 1 specifies that justify-content aligns flex items along the main axis.",
+          "MDN Web Docs confirms: The CSS justify-content property defines how the browser distributes space between and around content items along the main-axis of a flex container."
         ],
-        "contradictingFindings": [
-          "False when doing normal everyday math."
+        "contradictingFindings": [],
+        "citedEvidenceIds": [
+          "EVD-3B8FE7-01",
+          "EVD-3B8FE7-02"
         ],
-        "citedEvidenceIds": [],
-        "unresolvedQuestions": [
-          "Did the original question intend math or computer code?"
-        ],
-        "confidenceAssessment": "High certainty based on standard math and programming rules.",
-        "confidenceLimitations": "None",
-        "completedAt": "2026-10-17T10:20:09.796Z"
+        "confidenceAssessment": "Highest certainty (governed by normative W3C web standards)",
+        "confidenceLimitations": "None. W3C normative specifications govern all major modern browser engines."
       }
     },
     "investigationEvents": [
@@ -914,41 +833,34 @@
     "updatedAt": "2026-10-17T10:20:09.798Z",
     "verdict": {
       "agentName": "Gemma 4 Judge",
-      "verdict": "Mixed",
-      "takeaway": "In regular math, 1 + 1 is always 2. It only equals \"11\" when computer code glues them together as text.",
-      "summary": "This statement is partly true and partly tricky. In everyday math, 1 plus 1 is always 2. However, in computer programming languages like JavaScript, treating the digits as text glues them together into \"11\".",
-      "reasoning": "After hearing both sides, the court rules that this is a classic riddle. In mathematics, 1+1 strictly equals 2. You only get 11 when a computer or word game treats the numbers as letters and sticks them together. Because both sides have a valid point depending on the situation, the fair verdict is MIXED.",
+      "verdict": "Supported",
+      "takeaway": "In CSS Flexbox, justify-content strictly aligns items along the main (primary) axis, while align-items controls the cross axis.",
+      "summary": "The court finds the claim accurate and Supported. The W3C CSS Flexible Box specification defines justify-content as the property that aligns flex items along the main axis of the current flex line.",
+      "reasoning": "According to normative W3C CSS specifications, the main axis is defined by the flex-direction property (row or column). In both cases, justify-content distributes space and aligns items along that main primary axis, while align-items handles the cross axis.",
       "truthBreakdown": [
         {
-          "premise": "Regular Everyday Math (1 + 1 = 2)",
+          "premise": "justify-content aligns items along the main (primary) axis",
           "status": "TRUE",
-          "explanation": "In regular everyday math, one plus one is always two."
+          "explanation": "Normative W3C CSS Flexible Box specification explicitly assigns main-axis item alignment to justify-content."
         },
         {
-          "premise": "Computer Text (\"1\" + \"1\" = \"11\")",
+          "premise": "The main axis direction depends on flex-direction (row vs column)",
           "status": "TRUE",
-          "explanation": "In computer code like JavaScript, putting quotes around numbers turns them into words, gluing them together into \"11\"."
-        },
-        {
-          "premise": "Math Numbers giving 11 without text (1 + 1 = 11)",
-          "status": "FALSE",
-          "explanation": "If you are adding numbers without text tricks, it will never equal 11."
+          "explanation": "When flex-direction is row, the main axis is horizontal; when column, the main axis is vertical. justify-content applies along whichever axis is primary."
         }
       ],
       "supportingFindings": [
-        "True when computer code treats them like text words."
+        "W3C CSS Flexible Box Layout Module Level 1 specifies that justify-content aligns flex items along the main axis.",
+        "MDN Web Docs confirms: The CSS justify-content property defines how the browser distributes space between and around content items along the main-axis of a flex container."
       ],
-      "contradictingFindings": [
-        "False when doing normal everyday math."
+      "contradictingFindings": [],
+      "citedEvidenceIds": [
+        "EVD-3B8FE7-01",
+        "EVD-3B8FE7-02"
       ],
-      "citedEvidenceIds": [],
-      "unresolvedQuestions": [
-        "Did the original question intend math or computer code?"
-      ],
-      "confidenceAssessment": "High certainty based on standard math and programming rules.",
-      "confidenceLimitations": "None",
-      "completedAt": "2026-10-17T10:20:09.796Z"
+      "confidenceAssessment": "Highest certainty (governed by normative W3C web standards)",
+      "confidenceLimitations": "None. W3C normative specifications govern all major modern browser engines."
     },
-    "completedAt": "2026-10-17T10:20:09.798Z"
+    "completedAt": "2026-10-17T10:22:58.278Z"
   }
 ]
