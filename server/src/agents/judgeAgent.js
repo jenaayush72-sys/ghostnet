@@ -150,28 +150,14 @@ Deliver your definitive Gemma 4 Judicial Ruling. Explain the bottom line in clea
   if (breakdown.length === 0) {
     breakdown = [
       {
-        premise: 'Regular Everyday Math (1 + 1 = 2)',
-        status: 'TRUE',
-        explanation: 'In regular everyday math, one plus one is always two.'
-      },
-      {
-        premise: 'Computer Text ("1" + "1" = "11")',
-        status: 'TRUE',
-        explanation: 'In computer code like JavaScript, putting quotes around numbers turns them into words, gluing them together into "11".'
-      },
-      {
-        premise: 'Math Numbers giving 11 without text (1 + 1 = 11)',
-        status: 'FALSE',
-        explanation: 'If you are adding numbers without text tricks, it will never equal 11.'
+        premise: claim,
+        status: finalVerdict === 'Supported' ? 'TRUE' : (finalVerdict === 'Refuted' ? 'FALSE' : 'MIXED'),
+        explanation: result.summary || takeaway
       }
     ];
   }
 
-  const takeaway = result.takeaway || (
-    finalVerdict === 'Mixed'
-      ? 'In regular math, 1 + 1 is always 2. It only equals "11" when computer code glues them together as text.'
-      : (result.summary || 'The court has examined the facts and delivered a clear decision.')
-  );
+  const takeaway = result.takeaway || result.summary || 'The court has examined the facts and delivered a clear decision.';
 
   return {
     agentName: 'Gemma 4 Judge',
@@ -180,13 +166,9 @@ Deliver your definitive Gemma 4 Judicial Ruling. Explain the bottom line in clea
     takeaway,
     summary: result.summary || takeaway,
     truthBreakdown: breakdown,
-    reasoning: finalReasoning || 'After examining the arguments, the court found that this statement depends entirely on whether you are doing real math with numbers or playing a word/text trick with computer code.',
-    supportingFindings: Array.isArray(result.supportingFindings) && result.supportingFindings.length > 0
-      ? result.supportingFindings
-      : ['True when treated as text in programming languages.'],
-    contradictingFindings: Array.isArray(result.contradictingFindings) && result.contradictingFindings.length > 0
-      ? result.contradictingFindings
-      : ['False in regular everyday math.'],
+    reasoning: finalReasoning || result.reasoning || 'After examining the evidence and arguments, the court has synthesized an explainable verdict.',
+    supportingFindings: Array.isArray(result.supportingFindings) ? result.supportingFindings : [],
+    contradictingFindings: Array.isArray(result.contradictingFindings) ? result.contradictingFindings : [],
     citedEvidenceIds: verifiedCitedIds,
     unresolvedQuestions: Array.isArray(result.unresolvedQuestions) ? result.unresolvedQuestions : [],
     confidenceAssessment: result.confidenceAssessment || 'High judicial certainty based on multi-agent adversarial synthesis.',
