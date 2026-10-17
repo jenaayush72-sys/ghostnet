@@ -1,5 +1,7 @@
 import { config } from '../../config/env.js';
 
+let geminiQuotaExhaustedUntil = 0;
+
 /**
  * AI Provider abstraction for GhostNet.
  * Supports multi-model adversarial courtroom battles:
@@ -70,15 +72,11 @@ export class AiProviderService {
         }
 
         if (isFactChecker) {
-          if (config.sarvamApiKey) {
-            try {
-              console.log(`[AI Routing] Invoking Sarvam for Fact-Checker Agent...`);
-              return await this.callSarvam({ systemPrompt, userPrompt, schema, temperature });
-            } catch {
-              return await this.callGroq({ systemPrompt, userPrompt, schema, temperature });
-            }
-          } else if (config.groqApiKey) {
+          if (config.groqApiKey) {
+            console.log(`[AI Routing] Invoking Groq for Fast Fact-Checker Agent...`);
             return await this.callGroq({ systemPrompt, userPrompt, schema, temperature });
+          } else if (config.sarvamApiKey) {
+            return await this.callSarvam({ systemPrompt, userPrompt, schema, temperature });
           }
         }
 
@@ -115,6 +113,10 @@ export class AiProviderService {
    * Google Gemini API with Gemma 4 models (gemma-4-31b-it with fallback to gemma-4-26b-a4b-it)
    */
   async callGeminiGemma({ systemPrompt, userPrompt, schema, temperature }) {
+    if (Date.now() < geminiQuotaExhaustedUntil) {
+      throw new Error('Gemini API free-tier quota is exhausted. Fast-cascading directly to Groq.');
+    }
+
     const candidateModels = [
       config.geminiModel || 'gemma-4-31b-it',
       'gemini-3.8-flash',
@@ -125,7 +127,7 @@ export class AiProviderService {
 
     for (const model of candidateModels) {
       const stepController = new AbortController();
-      const stepTimer = setTimeout(() => stepController.abort(), 10000);
+      const stepTimer = setTimeout(() => stepController.abort(), 8000);
 
       try {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${config.geminiApiKey}`;
@@ -148,7 +150,13 @@ export class AiProviderService {
 
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
-          throw new Error(`Google API ${res.status}: ${errData.error?.message || res.statusText}`);
+          const errMsg = errData.error?.message || res.statusText;
+          if (res.status === 429 || errMsg.includes('quota') || errMsg.includes('Quota exceeded')) {
+            geminiQuotaExhaustedUntil = Date.now() + 60 * 60 * 1000;
+            console.warn('[Gemini/Gemma] Free tier rate limit detected. Skipping Gemini for 1 hour to prevent delay.');
+            throw new Error(`Google API quota exhausted: ${errMsg}`);
+          }
+          throw new Error(`Google API ${res.status}: ${errMsg}`);
         }
 
         const data = await res.json();
@@ -162,6 +170,9 @@ export class AiProviderService {
         clearTimeout(stepTimer);
         lastError = err;
         console.warn(`[Gemini/Gemma] Model ${model} failed (${err.message}). Trying next candidate...`);
+        if (err.message.includes('quota') || err.message.includes('Quota exceeded')) {
+          break; // Don't try other models if quota is exhausted
+        }
       }
     }
 
@@ -212,36 +223,47 @@ export class AiProviderService {
     const url = `${(config.sarvamBaseUrl || 'https://api.sarvam.ai/v1').replace(/\/+$/, '')}/chat/completions`;
     const prompt = `${systemPrompt}\n\nIMPORTANT: Respond ONLY with a valid JSON object.\n\nUSER PROMPT:\n${userPrompt}`;
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'api-subscription-key': config.sarvamApiKey
-      },
-      body: JSON.stringify({
-        model: config.sarvamModel || 'sarvam-105b',
-        max_tokens: 4096,
-        temperature: Math.max(0.1, temperature || 0.2),
-        messages: [
-          { role: 'user', content: prompt }
-        ]
-      }),
-      signal
-    });
+    const stepController = new AbortController();
+    const stepTimer = setTimeout(() => stepController.abort(), 18000);
+    const effectiveSignal = signal || stepController.signal;
 
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '');
-      throw new Error(`Sarvam API error ${res.status}: ${errText || res.statusText}`);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'api-subscription-key': config.sarvamApiKey
+        },
+        body: JSON.stringify({
+          model: config.sarvamModel || 'sarvam-105b',
+          max_tokens: 3000,
+          temperature: Math.max(0.1, temperature || 0.2),
+          messages: [
+            { role: 'user', content: prompt }
+          ]
+        }),
+        signal: effectiveSignal
+      });
+
+      clearTimeout(stepTimer);
+
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '');
+        throw new Error(`Sarvam API error ${res.status}: ${errText || res.statusText}`);
+      }
+
+      const data = await res.json();
+      const message = data.choices?.[0]?.message;
+      const content = message?.content || message?.reasoning_content;
+      if (!content) {
+        throw new Error('Sarvam API returned empty content.');
+      }
+
+      return this.parseAndValidateJson(content, schema);
+    } catch (err) {
+      clearTimeout(stepTimer);
+      throw err;
     }
-
-    const data = await res.json();
-    const message = data.choices?.[0]?.message;
-    const content = message?.content || message?.reasoning_content;
-    if (!content) {
-      throw new Error('Sarvam API returned empty content.');
-    }
-
-    return this.parseAndValidateJson(content, schema);
   }
 
   async callOllama({ systemPrompt, userPrompt, schema, temperature, signal }) {
