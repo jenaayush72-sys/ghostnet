@@ -78,7 +78,7 @@ export const api = {
 
   getExportUrl(caseId: string, format: 'json' | 'markdown' = 'json') {
     const cleanId = encodeURIComponent(String(caseId || '').trim().replace(/\s+/g, '-'));
-    return `/api/investigations/${cleanId}/export?format=${format}`;
+    return `${API_BASE_URL}/investigations/${cleanId}/export?format=${format}`;
   },
 
   async downloadReport(caseId: string, format: 'json' | 'markdown' = 'json', fallbackCaseData?: any) {
